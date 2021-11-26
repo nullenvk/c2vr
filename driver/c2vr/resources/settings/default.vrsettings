@@ -1,0 +1,16 @@
+{
+   "driver_c2vr" : {
+      "enable" : true,
+      "serialNumber" : "1234",
+      "modelNumber" : "C2VR Alpha",
+      "windowX" : 0,
+      "windowY" : 0,
+      "windowWidth" : 2880,
+      "windowHeight" : 1440,
+      "renderWidth" : 2880,
+      "renderHeight" : 1440,
+      "secondsFromVsyncToPhotons" : 0.0083,
+      "displayFrequency" : 120,
+      "ipd": 0.0685
+   }
+}

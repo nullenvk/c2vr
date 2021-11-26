@@ -1,0 +1,11 @@
+{
+    "alwaysActivate": false,
+    "name": "c2vr",
+    "directory": "",
+    "resourceOnly": false,
+    "hmd_presence":
+    [
+        //"2341.8036"
+        "*.*"
+    ]
+}
