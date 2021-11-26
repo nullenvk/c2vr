@@ -32,6 +32,8 @@ module_hole_dist = 10;
 strap_mount_ztop = 25;
 strap_mount_zside = 10;
 
+M2_5_r = 1.25;
+
 modules_space = [0, 
             lens_focal + (panel_d - 2*lens_thick) + screen_d,
             10 + panel_d,
@@ -176,14 +178,14 @@ module mirror_cross() {
 
 module display_controller_holes() {
     module dhole()
-        translate([disp_con_w/2 - 4, disp_con_h/2 - 4]) circle(r=1.25 + 0.1); // M2.5
+        translate([disp_con_w/2 - 4, disp_con_h/2 - 4]) circle(r=M2_5_r + 0.1); // M2.5
 
     mirror_cross() dhole();
 }
 
 module mpu_holes() {
     module hole()
-        translate([mpu_w/2 - 1.25, mpu_h/2 - 1.25]) circle(r=1.25 + 0.1); // M2.5
+        translate([mpu_w/2 - M2_5_r, mpu_h/2 - M2_5_r]) circle(r=M2_5_r + 0.1); // M2.5
 
     mirror_cross() hole();
 }
@@ -215,8 +217,8 @@ module case_base() {
 
 module holder_hole() {
     let(w = panel_w + 2 * (case_roundness + case_thickness), h = panel_h + 2 * (case_roundness + case_thickness)) {
-        translate([w/2 - holder_w/2 - (1.25 + 0.1), - module_hole_dist])
-        circle(r=1.25 + 0.1); 
+        translate([w/2 - holder_w/2 - (M2_5_r + 0.1), - module_hole_dist])
+        circle(r=M2_5_r + 0.1); 
     }
 }
 
@@ -257,7 +259,7 @@ module case_side_mount() {
     hole_d = 2;
 
     module mount_hole() { // M2.5
-        hole_r = 1.25 + 0.1; 
+        hole_r = M2_5_r + 0.1; 
 
         let(box_x = (hole_r - hole_a)/2) {
             translate([a-r + r/2, 0, 0]) {
