@@ -209,10 +209,11 @@ public:
     }
     
     void GetProjectionRaw(vr::EVREye eye, float *pfLeft, float *pfRight, float *pfTop, float *pfBottom) {
-        *pfLeft = -1.0;
-        *pfRight = 1.0;
-        *pfTop = -1.0;
-        *pfBottom = 1.0;	
+        // Reversed projection - TODO: Add reverse video to device settings
+        *pfLeft = 1.0;
+        *pfRight = -1.0;
+        *pfTop = 1.0;
+        *pfBottom = -1.0;	
     }
 
     vr::DistortionCoordinates_t ComputeDistortion(vr::EVREye eye, float fU, float fV) {
