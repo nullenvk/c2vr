@@ -23,28 +23,31 @@ static const uint8_t USB_HID_Descriptor[] PROGMEM = {
 
 MPU9250 mpu;
 
+MPU9250Setting mpu_settings;
+
 void setup() {
   static HIDSubDescriptor node(USB_HID_Descriptor, sizeof(USB_HID_Descriptor));
   HID().AppendDescriptor(&node);
   
   Serial.begin(115200);
   Wire.begin();
+  Wire.setClock(400000);
+
   delay(INIT_DELAY_MS);
 
-  mpu.setup(0x68);
+  mpu_settings.fifo_sample_rate = FIFO_SAMPLE_RATE::SMPL_500HZ;
+  
+  mpu.setup(0x68, mpu_settings);
+  //mpu.calibrateAccelGyro();
+  //mpu.calibrateMag();
+  mpu.setFilterIterations(10);
   delay(MPU_INIT_MS);
-  mpu.calibrateAccelGyro();
-  mpu.calibrateMag();
+
+  Serial.println("OK");
 }
 
 void loop() {
   if(mpu.update()) {
-    Serial.print(mpu.getYaw());
-    Serial.print(", ");
-    Serial.print(mpu.getPitch());
-    Serial.print(", ");
-    Serial.println(mpu.getRoll());
-
     float quat[4] = {
       mpu.getQuaternionX(),
       mpu.getQuaternionY(),
