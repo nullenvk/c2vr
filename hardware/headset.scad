@@ -8,7 +8,7 @@ lens_focal = 50;
 lens_outer = 2;
 lens_thick = 2;
 
-panel_w = 160;
+panel_w = 140;
 panel_h = 55;
 panel_d = 3;
 
@@ -25,17 +25,19 @@ disp_con_h = 40;
 mpu_w = 25;
 mpu_h = 15;
 
-holder_w = 20;
+holder_w = 12;
 holder_d = 1;
 module_hole_dist = 10;
 
 strap_mount_ztop = 25;
 strap_mount_zside = 10;
 
+nose_mount_offset = [10, 0];
+
 M2_5_r = 1.25;
 
 modules_space = [0, 
-            lens_focal + (panel_d - 2*lens_thick) + screen_d,
+            lens_focal + screen_d,
             10 + panel_d,
 ];
 
@@ -96,36 +98,36 @@ module nose_shape() {
     translate([0,0,-panel_h/2]) {
         hull() {
             translate([0,0,-5])
-            scale([0.8,1,2])
+            scale([0.85,1,2.1])
             sphere(r=19.25);
 
-            translate([0,0,-20])
-            scale([0.8,1,1])
+            translate([0,20,-20])
+            scale([1.0,2,1])
             sphere(r=25);
         }
     }
 
 }
 
-module panel_lens() {
-    union() {
+module panel_lens_nose() {
+    intersection() {
         difference() {
-            panel();
-            lens_sockets();
+            scale([1.1, 1.1, 1.1]) nose_shape();
             nose_shape();
         }
 
-        intersection() {
-            difference() {
-                scale([1.1, 1.1, 1.1]) nose_shape();
-                nose_shape();
-            }
-
-            let(w = panel_w + 2 * case_roundness, h = panel_h + 2 * case_roundness) {
-                translate([-w/2, -modules_space[1], -h/2])
-                cube([w, modules_space[1], h]);
-            }
+        let(w = panel_w + 2 * case_roundness, h = panel_h + 2 * case_roundness) {
+            translate([-w/2, -modules_space[1] - panel_d, -h/2])
+            cube([w, modules_space[1], h]);
         }
+    }
+}
+
+module panel_lens() {
+    difference() {
+        panel();
+        lens_sockets();
+        nose_shape();
     }
 }
 
@@ -296,10 +298,8 @@ module case_bottom() {
         difference() {
             case_base();
 
-            //let(w = panel_w + 2 * (case_roundness + case_thickness), h = panel_h + 2 * (case_roundness + case_thickness)) {
             translate([0,h/4])
             square([w,h/2], center=true);
-            //}
         }
     }
 
@@ -427,12 +427,16 @@ module case_top() {
     }
 }
 
+
 // Demo showcase:
 union() {
     case_bottom();
     translate([0,0,panel_h * 0]) color([0.2,0.5,1]) case_top();
 
     translate([0,-case_gap_outer - modules_pos[0], 0]) panel_lens();
+    color([0,1,0]) translate([0,-case_gap_outer - modules_pos[0], 0]) panel_lens_nose();
+
     translate([0,-case_gap_outer - modules_pos[1], 0]) panel_display();
     translate([0,-case_gap_outer - modules_pos[2], 0]) panel_controller();
+
 }
