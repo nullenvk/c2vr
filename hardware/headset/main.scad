@@ -39,6 +39,7 @@ M2_5_r = 1.25;
 modules_space = [0, 
             lens_focal + screen_d,
             10 + panel_d,
+            20,
 ];
 
 // Cumulative sum of module sizes
@@ -47,7 +48,7 @@ modules_pos = [ for (a=0, b=modules_space[0]; a < len(modules_space); a= a+1, b=
 case_thickness = 4;
 case_gap_outer = 2;
     
-case_length = modules_pos[len(modules_pos) - 1] + case_gap_outer*2 + len(modules_pos) * panel_d;
+case_length = modules_pos[len(modules_pos) - 1] + (len(modules_pos) - 2) * panel_d;
 
 // Variables validation section
 assert(panel_w > lens_d*2);
@@ -348,6 +349,9 @@ module strap_mount_r() {
 
 module case_top() {
     face_len = 40;
+    cutout_r = 64;
+    cutout_s = [1.5, 5, 1.2];
+    cutout_p = 5;
 
     union() {
         // Face panel
@@ -358,9 +362,9 @@ module case_top() {
                 linear_extrude(face_len, convexity=10)
                 case_base();
 
-                translate([0,0,-face_len])
-                scale([2,5,1.2])
-                sphere(r=60);
+                translate([0,0,-face_len - cutout_p])
+                scale(cutout_s)
+                sphere(r=cutout_r);
 
                 rotate([-90,0,0])
                 translate([0,-face_len - case_gap_outer - modules_pos[0], 0])
@@ -378,9 +382,9 @@ module case_top() {
                 translate([0,-face_len - case_gap_outer - modules_pos[0], 0])
                 nose_shape();
                 
-                translate([0,0,-face_len])
-                scale([2,5,1.2])
-                sphere(r=60);
+                translate([0,0,-face_len - cutout_p])
+                scale(cutout_s)
+                sphere(r=cutout_r);
             }
 
             // Strap mounts
@@ -427,6 +431,9 @@ module case_top() {
     }
 }
 
+module panel_end() {
+
+}
 
 // Demo showcase:
 union() {
