@@ -33,6 +33,8 @@ strap_mount_ztop = 25;
 strap_mount_zside = 10;
 
 nose_mount_offset = [10, 0];
+    
+face_len = 40;
 
 M2_5_r = 1.25;
 
@@ -347,45 +349,50 @@ module strap_mount_r() {
     strap_mount();
 }
 
-module case_top() {
-    face_len = 40;
+module face_side() {
     cutout_r = 64;
     cutout_s = [1.5, 5, 1.2];
     cutout_p = 5;
+
+    difference() {
+        linear_extrude(face_len, convexity=10)
+        case_base();
+
+        translate([0,0,-face_len - cutout_p])
+        scale(cutout_s)
+        sphere(r=cutout_r);
+
+        rotate([-90,0,0])
+        translate([0,-face_len - case_gap_outer - modules_pos[0], 0])
+        nose_shape();
+    }
+
+    difference() {
+        linear_extrude(face_len, convexity=10)
+        difference() {
+            panel_bare(panel_w + 4 * case_thickness, panel_h + 4 * case_thickness);
+            panel_bare(panel_w, panel_h);
+        }
+
+        rotate([-90,0,0])
+        translate([0,-face_len - case_gap_outer - modules_pos[0], 0])
+        nose_shape();
+        
+        translate([0,0,-face_len - cutout_p])
+        scale(cutout_s)
+        sphere(r=cutout_r);
+    }
+
+}
+
+module case_top() {
 
     union() {
         // Face panel
         translate([0,face_len,0])
         rotate([90,0,0])
         union() {
-            difference() {
-                linear_extrude(face_len, convexity=10)
-                case_base();
-
-                translate([0,0,-face_len - cutout_p])
-                scale(cutout_s)
-                sphere(r=cutout_r);
-
-                rotate([-90,0,0])
-                translate([0,-face_len - case_gap_outer - modules_pos[0], 0])
-                nose_shape();
-            }
-
-            difference() {
-                linear_extrude(face_len, convexity=10)
-                difference() {
-                    panel_bare(panel_w + 4 * case_thickness, panel_h + 4 * case_thickness);
-                    panel_bare(panel_w, panel_h);
-                }
-
-                rotate([-90,0,0])
-                translate([0,-face_len - case_gap_outer - modules_pos[0], 0])
-                nose_shape();
-                
-                translate([0,0,-face_len - cutout_p])
-                scale(cutout_s)
-                sphere(r=cutout_r);
-            }
+            face_side();
 
             // Strap mounts
             translate([0, 0, face_len])
@@ -427,7 +434,6 @@ module case_top() {
             translate([0,-modules_pos[2] - panel_d - 5, panel_h/2 + case_thickness*3])
             cube([disp_con_w, 5, case_thickness*2], center=true);
         }
-
     }
 }
 
@@ -439,7 +445,7 @@ module panel_end() {
 union() {
     case_bottom();
     translate([0,0,panel_h * 0]) color([0.2,0.5,1]) case_top();
-
+    
     translate([0,-case_gap_outer - modules_pos[0], 0]) panel_lens();
     color([0,1,0]) translate([0,-case_gap_outer - modules_pos[0], 0]) panel_lens_nose();
 
