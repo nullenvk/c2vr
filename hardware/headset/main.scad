@@ -47,7 +47,7 @@ modules_space = [0,
 // Cumulative sum of module sizes
 modules_pos = [ for (a=0, b=modules_space[0]; a < len(modules_space); a= a+1, b=b+modules_space[ min(a, len(modules_space) - 1) ]) b];
     
-case_thickness = 4;
+case_thickness = 2.5;
 case_gap_outer = 2;
     
 case_length = modules_pos[len(modules_pos) - 1] + (len(modules_pos) - 2) * panel_d;
