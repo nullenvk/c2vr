@@ -228,7 +228,7 @@ module holder_hole() {
     }
 }
 
-module module_holder() {
+module module_holder(single=false) {
     module holder_single() {
         translate([0, -case_gap_outer, 0])
         rotate([90,0,0])
@@ -251,7 +251,8 @@ module module_holder() {
     color([0,1,0])
     union() {
         translate([0,holder_d,0]) holder_single();
-        translate([0,-panel_d - 0.3, 0]) holder_single();
+        if(!single)
+            translate([0,-panel_d - 0.3, 0]) holder_single();
     }
 }
 
@@ -314,7 +315,10 @@ module case_bottom() {
             nose_shape();
         }
 
-        for(i = modules_pos) translate([0,-i,0]) module_holder();
+        // Make the last holder one-sided
+        for(i = [0, len(modules_pos) - 2]) translate([0,-modules_pos[i],0]) module_holder();
+        translate([0, -modules_pos[len(modules_pos) - 1], 0]) module_holder(single=true);
+
 
         color([1,1,0.4]) {
             translate([w/2,0,0])
@@ -352,7 +356,7 @@ module strap_mount_r() {
 
 module face_side() {
     cutout_r = 64;
-    cutout_s = [1.5, 5, 1.2];
+    cutout_s = [1.7, 5, 1.2];
     cutout_p = 5;
 
     outer_scale = 2;
