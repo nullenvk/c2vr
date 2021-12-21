@@ -416,8 +416,8 @@ module case_top() {
                     difference() {
                         case_base();
 
-                            translate([0,-h/4])
-                            square([w,h/2], center=true);
+                        translate([0,-h/4])
+                        square([w,h/2], center=true);
                     }
 
 
@@ -431,8 +431,8 @@ module case_top() {
                 }
             }
 
-            translate([0,-modules_pos[2] - panel_d - 5, panel_h/2 + case_thickness*3])
-            cube([disp_con_w, 5, case_thickness*2], center=true);
+            translate([0,-modules_pos[2] - panel_d - 5, panel_h/2 + case_thickness*4])
+            cube([disp_con_w, 7.5, case_thickness*2], center=true);
         }
     }
 }
