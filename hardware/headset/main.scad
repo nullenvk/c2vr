@@ -445,10 +445,6 @@ module case_top() {
     }
 }
 
-module panel_end() {
-
-}
-
 // Demo showcase:
 union() {
     case_bottom();
@@ -459,5 +455,5 @@ union() {
 
     translate([0,-case_gap_outer - modules_pos[1], 0]) panel_display();
     translate([0,-case_gap_outer - modules_pos[2], 0]) panel_controller();
-
+    translate([0,-case_gap_outer - modules_pos[3], 0]) panel();
 }
