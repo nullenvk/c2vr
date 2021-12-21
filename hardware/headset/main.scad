@@ -37,11 +37,12 @@ nose_mount_offset = [10, 0];
 face_len = 40;
 
 M2_5_r = 1.25;
+M2_5_nut_l = 2;
 
 modules_space = [0, 
             lens_focal + screen_d,
-            10 + panel_d,
-            20,
+            0.5 + M2_5_nut_l + panel_d,
+            18,
 ];
 
 // Cumulative sum of module sizes
@@ -354,6 +355,10 @@ module face_side() {
     cutout_s = [1.5, 5, 1.2];
     cutout_p = 5;
 
+    outer_scale = 2;
+    inner_scale = 2;
+    inner_dist = 10;
+
     difference() {
         linear_extrude(face_len, convexity=10)
         case_base();
@@ -370,7 +375,7 @@ module face_side() {
     difference() {
         linear_extrude(face_len, convexity=10)
         difference() {
-            panel_bare(panel_w + 4 * case_thickness, panel_h + 4 * case_thickness);
+            panel_bare(panel_w + 2 * outer_scale * case_thickness, panel_h + 2 * outer_scale * case_thickness);
             panel_bare(panel_w, panel_h);
         }
 
@@ -386,7 +391,6 @@ module face_side() {
 }
 
 module case_top() {
-
     union() {
         // Face panel
         translate([0,face_len,0])
