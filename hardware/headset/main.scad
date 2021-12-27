@@ -394,26 +394,30 @@ module face_side() {
 
 }
 
+module face_panel() {
+    // Face panel
+    translate([0,face_len,0])
+    rotate([90,0,0])
+    union() {
+        face_side();
+
+        // Strap mounts
+        translate([0, 0, face_len])
+        mirror([0,0,1]) {
+            mirror([1,0,0]) strap_mount_r();
+            strap_mount_r();
+        }
+            
+        translate([0, panel_h/2 + 3*case_thickness, face_len + strap_mount_ztop])
+        rotate([0,0,-90])
+        strap_mount();
+
+    }
+}
+
 module case_top() {
     union() {
-        // Face panel
-        translate([0,face_len,0])
-        rotate([90,0,0])
-        union() {
-            face_side();
-
-            // Strap mounts
-            translate([0, 0, face_len])
-            mirror([0,0,1]) {
-                mirror([1,0,0]) strap_mount_r();
-                strap_mount_r();
-            }
-                
-            translate([0, panel_h/2 + 3*case_thickness, face_len + strap_mount_ztop])
-            rotate([0,0,-90])
-            strap_mount();
-
-        }
+        face_panel();
 
         // Actual top case
         difference() {

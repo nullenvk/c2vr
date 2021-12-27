@@ -3,6 +3,7 @@
 
 const int INIT_DELAY_MS = 1000;
 const int MPU_INIT_MS = 500;
+const int QUAT_SCALE = 1000;
 
 // Descriptor made by okawo80085
 static const uint8_t USB_HID_Descriptor[] PROGMEM = {
@@ -22,7 +23,6 @@ static const uint8_t USB_HID_Descriptor[] PROGMEM = {
 };
 
 MPU9250 mpu;
-
 MPU9250Setting mpu_settings;
 
 void setup() {
@@ -54,7 +54,17 @@ void loop() {
       mpu.getQuaternionZ(),
       mpu.getQuaternionW(),
     };
+    
+    /*
+    Serial.print(quat[0]);
+    Serial.print(",");
+    Serial.print(quat[1]);
+    Serial.print(",");
+    Serial.print(quat[2]);
+    Serial.print(",");
+    Serial.println(quat[3]);
+    */
 
-    HID().SendReport(1,quat,63);
+    HID().SendReport(1,quat,16);
   }
 }
