@@ -5,7 +5,7 @@
 #include <stdint.h>
 
 #define MAX_STR 255
-#define QUAT_SCALE 1000.f
+#define QUAT_SCALE 10000.f
 
 int main() {
     uint8_t raport_id;
@@ -24,15 +24,14 @@ int main() {
     res = hid_write(dev_hndl, (unsigned char*)buf, 17);
 
     while(1) {
-        hid_read(dev_hndl, &raport_id, 1);
-        hid_read(dev_hndl, (unsigned char*)buf, 16);
+        //hid_read(dev_hndl, &raport_id, 1);
+        hid_read(dev_hndl, (unsigned char*)buf, 17);
 
-        float quat[4];
-        memcpy(quat, buf, 16);
+        int32_t quat[4];
+        memcpy(quat, buf+1, 16);
 
         for(int i = 0; i < 4; i++)
-            //printf("%d ", buf[i]);
-            printf("%f ", quat[i]);
+            printf("%f ", (float)quat[i] / QUAT_SCALE);
 
         puts("");
     }

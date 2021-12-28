@@ -1,9 +1,10 @@
 #include <MPU9250.h>
 #include <HID.h>
 
+#define QUAT_SCALE 10000.f
+
 const int INIT_DELAY_MS = 1000;
 const int MPU_INIT_MS = 500;
-const int QUAT_SCALE = 1000;
 
 // Descriptor made by okawo80085
 static const uint8_t USB_HID_Descriptor[] PROGMEM = {
@@ -48,14 +49,13 @@ void setup() {
 
 void loop() {
   if(mpu.update()) {
-    float quat[4] = {
-      mpu.getQuaternionX(),
-      mpu.getQuaternionY(),
-      mpu.getQuaternionZ(),
-      mpu.getQuaternionW(),
+    int32_t quat[4] = {
+      mpu.getQuaternionX() * QUAT_SCALE,
+      mpu.getQuaternionY() * QUAT_SCALE,
+      mpu.getQuaternionZ() * QUAT_SCALE,
+      mpu.getQuaternionW() * QUAT_SCALE,
     };
     
-    /*
     Serial.print(quat[0]);
     Serial.print(",");
     Serial.print(quat[1]);
@@ -63,7 +63,6 @@ void loop() {
     Serial.print(quat[2]);
     Serial.print(",");
     Serial.println(quat[3]);
-    */
 
     HID().SendReport(1,quat,16);
   }
