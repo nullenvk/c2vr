@@ -5,6 +5,7 @@
 #include <thread>
 
 #include "driverlog.h"
+#include "hid.h"
 
 #if defined(_MSC_VER)
     #define HMD_DLL_EXPORT extern "C" __declspec(dllexport)
@@ -34,6 +35,7 @@ static const char * const k_pch_c2vr_RenderHeight_Int32 = "renderHeight";
 static const char * const k_pch_c2vr_SecondsFromVsyncToPhotons_Float = "secondsFromVsyncToPhotons";
 static const char * const k_pch_c2vr_DisplayFrequency_Float = "displayFrequency";
 
+CHIDHandler g_hidHandler;
 
 class CWatchdogDriver_Sample : public vr::IVRWatchdogProvider
 {
@@ -51,8 +53,6 @@ private:
 };
 
 CWatchdogDriver_Sample g_watchdogDriverNull;
-
-
 bool g_bExiting = false;
 
 void WatchdogThreadFunction(  )
@@ -157,20 +157,28 @@ public:
         return NULL;
     }
 
-    void DebugRequest(const char *request, char *respBuffer, uint32_t respBufferSz) {
+    void DebugRequest(const char *, char *respBuffer, uint32_t respBufferSz) {
         if(respBufferSz > 0)
             respBuffer[0] = 0;
     }
     
     vr::DriverPose_t GetPose() {
-        vr::DriverPose_t pose = { 0 };
-        pose.poseIsValid = true;
-        pose.result = vr::TrackingResult_Running_OK;
-        pose.deviceIsConnected = true;
+        //vr::DriverPose_t pose = { 0 };
+        vr::DriverPose_t pose; 
+
+        if(this->m_unObjectId != vr::k_unTrackedDeviceIndexInvalid) {
+            pose.poseIsValid = true;
+            pose.result = vr::TrackingResult_Running_OK;
+            pose.deviceIsConnected = true;
+        } else {
+            pose.poseIsValid = false;
+            pose.result = vr::TrackingResult_Uninitialized;
+            pose.deviceIsConnected = false;
+        }
 
         pose.qWorldFromDriverRotation = HmdQuaternion_Init( 1, 0, 0, 0 );
         pose.qDriverFromHeadRotation = HmdQuaternion_Init( 1, 0, 0, 0 );
-
+        
         return pose;
     }
 

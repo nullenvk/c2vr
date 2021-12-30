@@ -3,11 +3,11 @@ STEAM_DIR ?= ~/.steam/steam
 
 CXX ?= clang++
 
-CFLAGS := -Wall -Wextra -fstack-protector-strong -O2 -pipe \
-    -Werror=format-security -I/usr/local/include -DDRIVER_SAMPLE_EXPORTS
+CXXFLAGS := -Wall -Wextra -fstack-protector-strong -O2 -pipe \
+    -Werror=format-security -I/usr/local/include -DDRIVER_SAMPLE_EXPORTS -std=c++17
 LDFLAGS :=
 
-OBJ := src/driver.o src/driverlog.o
+OBJ := src/driver.o src/driverlog.o src/hid.o
 BIN := $(DRV_DIR)/bin/linux64/driver_c2vr.so
 
 all: $(BIN)
@@ -17,7 +17,7 @@ $(BIN): $(OBJ)
 	$(CXX) -shared $(LDFLAGS) -o $@ $(OBJ) 
 
 .cpp.o:
-	$(CXX) $(CFLAGS) -fPIC -c $< -o $@
+	$(CXX) $(CXXFLAGS) -fPIC -c $< -o $@
 
 register:
 	$(STEAM_DIR)/steamapps/common/SteamVR/bin/linux64/vrpathreg adddriver ${DRV_DIR}
