@@ -35,8 +35,6 @@ static const char * const k_pch_c2vr_RenderHeight_Int32 = "renderHeight";
 static const char * const k_pch_c2vr_SecondsFromVsyncToPhotons_Float = "secondsFromVsyncToPhotons";
 static const char * const k_pch_c2vr_DisplayFrequency_Float = "displayFrequency";
 
-CHIDHandler g_hidHandler;
-
 class CWatchdogDriver_Sample : public vr::IVRWatchdogProvider
 {
 public:
@@ -140,10 +138,15 @@ public:
         // avoid "not fullscreen" warnings from vrmonitor
         vr::VRProperties()->SetBoolProperty(m_propertyContainer, vr::Prop_IsOnDesktop_Bool, false);
 
+        hidHandler.start(
+                vr::VRProperties()->GetInt32Property(m_propertyContainer, vr::Prop_EdidVendorID_Int32),
+                vr::VRProperties()->GetInt32Property(m_propertyContainer, vr::Prop_EdidProductID_Int32));
+
         return vr::VRInitError_None;
     }
 
     void Deactivate() {
+        hidHandler.stop();
         m_unObjectId = vr::k_unTrackedDeviceIndexInvalid;
     }
 
@@ -178,6 +181,8 @@ public:
 
         pose.qWorldFromDriverRotation = HmdQuaternion_Init( 1, 0, 0, 0 );
         pose.qDriverFromHeadRotation = HmdQuaternion_Init( 1, 0, 0, 0 );
+
+        // TODO: Update quaternion data from hidHandler
         
         return pose;
     }
@@ -249,6 +254,8 @@ private:
     float m_IPD, m_displayFreq, m_secondsFromVsyncToPhotons;
     int32_t m_windowX, m_windowY, m_windowW, m_windowH;
     int32_t m_renderW, m_renderH;
+    
+    CHIDHandler hidHandler;
 };
     
 class CServerDriver : public vr::IServerTrackedDeviceProvider {

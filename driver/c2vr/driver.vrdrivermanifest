@@ -5,7 +5,7 @@
     "resourceOnly": false,
     "hmd_presence":
     [
-        //"2341.8036"
         "*.*"
+        //"1b4f.9206"
     ]
 }

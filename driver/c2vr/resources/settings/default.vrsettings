@@ -11,6 +11,8 @@
       "renderHeight" : 1440,
       "secondsFromVsyncToPhotons" : 0.0083,
       "displayFrequency" : 120,
-      "ipd": 0.0685
+      "ipd": 0.0685,
+      "edid_vid": 6991, // 1b4f
+      "edid_pid": 37382 // 9206
    }
 }
