@@ -359,55 +359,35 @@ module face_side() {
     cutout_s = [1.7, 5, 1.2];
     cutout_p = 0;
 
-    facing_scale = 2;
-    facing_dist = 5;
+    entire_scale = 2;
+    facing_scale = 2.5;
+    facing_len = 3;
+
+    module face_side_base(r_outer, r_inner) {
+        difference() {
+            linear_extrude(face_len, convexity=15)
+            difference() {
+                panel_bare(panel_w + r_outer, panel_h + r_outer);
+                panel_bare(panel_w - r_inner, panel_h - r_inner);
+            }
+
+            rotate([-90,0,0])
+            translate([0,-face_len - case_gap_outer - modules_pos[0], 0])
+            nose_shape();
+            
+            translate([0,0,-face_len - cutout_p])
+            scale(cutout_s)
+            sphere(r=cutout_r);
+
+        }
+    }
 
     union() {
+        face_side_base(2 * entire_scale * case_thickness, 0);
+        let(s = facing_scale * entire_scale * case_thickness) 
         difference() {
-            linear_extrude(face_len, convexity=10)
-            case_base();
-
-            translate([0,0,-face_len - cutout_p])
-            scale(cutout_s)
-            sphere(r=cutout_r);
-
-            rotate([-90,0,0])
-            translate([0,-face_len - case_gap_outer - modules_pos[0], 0])
-            nose_shape();
-        }
-
-        difference() {
-            linear_extrude(face_len, convexity=10)
-            difference() {
-                panel_bare(panel_w + 2 * facing_scale * case_thickness, panel_h + 2 * facing_scale * case_thickness);
-                panel_bare(panel_w, panel_h);
-            }
-
-            rotate([-90,0,0])
-            translate([0,-face_len - case_gap_outer - modules_pos[0], 0])
-            nose_shape();
-            
-            translate([0,0,-face_len - cutout_p])
-            scale(cutout_s)
-            sphere(r=cutout_r);
-        }
-
-        translate([0,0,-facing_dist])
-        difference() {
-            linear_extrude(face_len - facing_dist, convexity=10)
-            difference() {
-                panel_bare(panel_w + 2 * facing_scale * case_thickness, panel_h + 2 * facing_scale * case_thickness);
-                panel_bare(panel_w - 2 * facing_scale * case_thickness, panel_h - 2 * facing_scale * case_thickness);
-            }
-
-            rotate([-90,0,0])
-            translate([0,-face_len - case_gap_outer - modules_pos[0] + facing_dist, 0])
-            nose_shape();
-            
-            translate([0,0,-face_len - cutout_p + facing_dist])
-            scale(cutout_s)
-            sphere(r=cutout_r);
-
+            face_side_base(s, s);
+            translate([0,0,facing_len]) face_side_base(s + EPSILON, s + EPSILON);
         }
     }
 }
