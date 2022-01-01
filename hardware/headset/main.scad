@@ -370,10 +370,6 @@ module face_side() {
                 panel_bare(panel_w + r_outer, panel_h + r_outer);
                 panel_bare(panel_w - r_inner, panel_h - r_inner);
             }
-
-            rotate([-90,0,0])
-            translate([0,-face_len - case_gap_outer - modules_pos[0], 0])
-            nose_shape();
             
             translate([0,0,-face_len - cutout_p])
             scale(cutout_s)
@@ -382,13 +378,20 @@ module face_side() {
         }
     }
 
-    union() {
-        face_side_base(2 * entire_scale * case_thickness, 0);
-        let(s = facing_scale * entire_scale * case_thickness) 
-        difference() {
-            face_side_base(s, s);
-            translate([0,0,facing_len]) face_side_base(s + EPSILON, s + EPSILON);
+    difference() {
+        union() {
+            face_side_base(2 * entire_scale * case_thickness, 0);
+            let(s = facing_scale * entire_scale * case_thickness) 
+            difference() {
+                face_side_base(s, s);
+                translate([0,0,facing_len]) face_side_base(s + EPSILON, s + EPSILON);
+                
+            }
         }
+
+        rotate([-90,0,0])
+        translate([0,-face_len - case_gap_outer - modules_pos[0], 0])
+        nose_shape();
     }
 }
 
