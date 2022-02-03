@@ -11,6 +11,10 @@ frame_side_thick = 5;
 frame_side_h = screen_d;
 frame_base_thick = 2;
 
+// Calculated
+frame_base_w = 2*frame_side_thick + screen_w;
+frame_base_h = frame_side_thick + screen_h + tapeout_h;
+
 module display_reference_flat() {
     square([screen_w, screen_h]);
 }
@@ -22,9 +26,7 @@ module tapeout_reference() {
 module frame_bare() {
     linear_extrude(frame_side_h)
     difference() {
-        let(w = 2*frame_side_thick + screen_w,
-            h = frame_side_thick + screen_h + tapeout_h)
-            square([w,h]);
+        square([frame_base_w, frame_base_h]); // Change later
 
         translate([frame_side_thick, tapeout_h])
             display_reference_flat();
@@ -36,10 +38,7 @@ module frame_bare() {
 
 module frame_base() {
     linear_extrude(frame_base_thick)
-    let(w = 2*frame_side_thick + screen_w,
-        h = frame_side_thick + screen_h + tapeout_h)
-        square([w,h]);
-
+    square([frame_base_w, frame_base_h]);
 }
 
 module frame_full() {
