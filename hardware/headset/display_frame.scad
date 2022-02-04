@@ -31,8 +31,7 @@ frame_nut_pos = [
 ];
 
 module dot_pattern(w, h) {
-    dot_r = 1.25;
-    //square([w,h]);
+    dot_r = 2.2;
     dot_xn = w/(dot_r*2);
     dot_yn = h/(dot_r*2);
 
