@@ -8,21 +8,21 @@ screen_d = 1.51 + 0.4;
 
 tapeout_h = 2; // TODO: Measure it correctly
 
-frame_side_thick = 5;
+frame_side_thick = 2;
 frame_side_h = screen_d;
 frame_base_thick = 2;
 
-side_w = 10;
+side_w = 5;
 
-holder_edge = 2;
+holder_edge = 0.5;
 holder_h = 1;
 
 // Calculated
 frame_base_w = 2*frame_side_thick + screen_w + 2*side_w;
 frame_base_h = frame_side_thick + screen_h + tapeout_h;
 
-frame_offset_x = 3;
-frame_offset_y = 3;
+frame_offset_x = 1.5;
+frame_offset_y = 2;
 
 frame_nut_r = 1.25;
 frame_nut_pos = [
@@ -31,16 +31,16 @@ frame_nut_pos = [
 ];
 
 module dot_pattern(w, h) {
-    dot_r = 2.2;
-    dot_xn = w/(dot_r*2);
-    dot_yn = h/(dot_r*2);
+    dot_l = 2.4;
+    dot_xn = w/(dot_l*2);
+    dot_yn = h/(dot_l*2);
 
-    off_x = dot_r;
-    off_y = dot_r;
+    off_x = dot_l;
+    off_y = dot_l;
 
-    for(y=[off_y : dot_r*2 : h]) {
-        for(x=[off_x : dot_r*2 : w])
-            translate([x,y]) square([dot_r, dot_r]);
+    for(y=[off_y : dot_l*2 : h - dot_l]) {
+        for(x=[off_x : dot_l*2 : w - dot_l])
+            translate([x,y]) square([dot_l, dot_l]);
     }
 }
 
