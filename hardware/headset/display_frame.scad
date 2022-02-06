@@ -121,4 +121,4 @@ module frame_full() {
     }
 }
 
-translate([0,40,0]) frame_full();
+//translate([0,40,0]) frame_full();
