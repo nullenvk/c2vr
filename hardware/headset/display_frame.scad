@@ -10,9 +10,9 @@ frame_tapeout_h = 2; // TODO: Measure it correctly
 
 frame_side_thick = 2;
 frame_side_h = screen_d;
-frame_base_thick = 2;
+frame_base_thick = 1;
 
-frame_side_w = 5;
+frame_side_w = 4;
 
 holder_edge = 0.5;
 holder_h = 1;
@@ -21,7 +21,7 @@ holder_h = 1;
 frame_base_w = 2*frame_side_thick + screen_w + 2*frame_side_w;
 frame_base_h = frame_side_thick + screen_h + frame_tapeout_h;
 
-frame_offset_x = 1.5;
+frame_offset_x = 1;
 frame_offset_y = 2;
 
 frame_nut_r = 1.25;
@@ -121,4 +121,4 @@ module frame_full() {
     }
 }
 
-//frame_full();
+translate([0,40,0]) frame_full();
