@@ -1,25 +1,25 @@
-EPSILON = 0.01; // Just a very small number
-$fn = 50;
+//EPSILON = 0.01; 
+//$fn = 50;
 
 // In MM
 screen_w = 54.24 + 0.4; 
 screen_h = 59.02 + 0.4;
 screen_d = 1.51 + 0.4;
 
-tapeout_h = 2; // TODO: Measure it correctly
+frame_tapeout_h = 2; // TODO: Measure it correctly
 
 frame_side_thick = 2;
 frame_side_h = screen_d;
 frame_base_thick = 2;
 
-side_w = 5;
+frame_side_w = 5;
 
 holder_edge = 0.5;
 holder_h = 1;
 
 // Calculated
-frame_base_w = 2*frame_side_thick + screen_w + 2*side_w;
-frame_base_h = frame_side_thick + screen_h + tapeout_h;
+frame_base_w = 2*frame_side_thick + screen_w + 2*frame_side_w;
+frame_base_h = frame_side_thick + screen_h + frame_tapeout_h;
 
 frame_offset_x = 1.5;
 frame_offset_y = 2;
@@ -58,6 +58,13 @@ module reference_nut_holes() {
     }
 }
 
+module frame_mount_pattern() {
+    translate([-frame_base_w/2, -frame_base_h/2]) {
+        reference_nut_holes();
+        translate([frame_side_thick + frame_side_w, frame_tapeout_h]) dot_pattern(screen_w, screen_h);
+    }
+}
+
 module display_reference_flat() {
     square([screen_w, screen_h]);
 }
@@ -66,15 +73,15 @@ module display_reference_visible() {
 }
 
 module tapeout_reference() {
-    square([screen_w, tapeout_h + EPSILON]);
+    square([screen_w, frame_tapeout_h + EPSILON]);
 }
 
 module frame_bare() {
     linear_extrude(frame_side_h)
     difference() {
-        square([frame_base_w - 2*side_w, frame_base_h]); // Change later
+        square([frame_base_w - 2*frame_side_w, frame_base_h]); // Change later
 
-        translate([frame_side_thick, tapeout_h])
+        translate([frame_side_thick, frame_tapeout_h])
             display_reference_flat();
 
         translate([frame_side_thick, -EPSILON/2])
@@ -85,9 +92,9 @@ module frame_bare() {
 module frame_holder() {
     linear_extrude(holder_h)
     difference() {
-        square([frame_base_w - 2*side_w, frame_base_h]); // Change later
+        square([frame_base_w - 2*frame_side_w, frame_base_h]); // Change later
 
-        translate([frame_side_thick + holder_edge, tapeout_h])
+        translate([frame_side_thick + holder_edge, frame_tapeout_h])
             display_reference_visible();
 
         translate([frame_side_thick, -EPSILON/2])
@@ -101,7 +108,7 @@ module frame_base() {
         square([frame_base_w, frame_base_h]);
 
         reference_nut_holes();
-        translate([frame_side_thick + side_w, tapeout_h]) dot_pattern(screen_w, screen_h);
+        translate([frame_side_thick + frame_side_w, frame_tapeout_h]) dot_pattern(screen_w, screen_h);
     }
 }
 
@@ -109,9 +116,9 @@ module frame_full() {
     translate([-frame_base_w/2, -frame_base_h/2])
     union() {
         frame_base();
-        translate([side_w,0,frame_base_thick]) frame_bare();
-        translate([side_w,0,frame_base_thick + frame_side_h]) frame_holder();
+        translate([frame_side_w,0,frame_base_thick]) frame_bare();
+        translate([frame_side_w,0,frame_base_thick + frame_side_h]) frame_holder();
     }
 }
 
-frame_full();
+//frame_full();

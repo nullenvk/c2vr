@@ -2,6 +2,8 @@
 $fn = 50;
 EPSILON = 0.01;
 
+include <display_frame.scad>;
+
 IPD = 68.5;
 lens_d = 40 + 0.5;
 lens_focal = 50;
@@ -13,11 +15,6 @@ panel_h = 55;
 panel_d = 3;
 
 case_roundness = 8;
-
-screen_w = 54.24 + 0.4;
-screen_h = 59.02 + 0.4;
-screen_d = 1.51;
-screen_bezel = 2.5;
 
 disp_con_w = 100;
 disp_con_h = 40;
@@ -44,6 +41,7 @@ modules_space = [0,
             0.5 + M2_5_nut_l + panel_d,
             18,
 ];
+
 
 // Cumulative sum of module sizes
 modules_pos = [ for (a=0, b=modules_space[0]; a < len(modules_space); a= a+1, b=b+modules_space[ min(a, len(modules_space) - 1) ]) b];
@@ -135,24 +133,6 @@ module panel_lens() {
     }
 }
 
-module display_holder() {
-    w = screen_w;
-    h = screen_h;
-
-    module dh_base() {
-        difference() {
-            square([w + 2*screen_bezel, h + 2*screen_bezel]);
-            translate([screen_bezel,0]) square([w, h + screen_bezel]);
-        }
-    }
-
-    rotate([90,0,0])
-    translate([-w/2, -h/2, -screen_d])
-    color([1,0,0])
-    linear_extrude(screen_d)
-        dh_base();
-}
-
 module panel_display() {
     hole_h = 5;
 
@@ -163,13 +143,12 @@ module panel_display() {
             panel_base(panel_w, panel_h);
             translate([0,hole_h/2 - (panel_h + 2*case_roundness)/2,0])
                 square([panel_w, hole_h], center=true);
+
+            ipd_mirror() frame_mount_pattern();
         }
     }
     
-    union() {
-        pd_base();
-        ipd_mirror() display_holder();
-    }
+    pd_base();
 }
 
 module mirror_cross() {
@@ -453,12 +432,12 @@ module case_top() {
 // Demo showcase:
 union() {
     case_bottom();
-    translate([0,0,panel_h * 0]) color([0.2,0.5,1]) case_top();
+    //translate([0,0,panel_h * 0]) color([0.2,0.5,1]) case_top();
     
     translate([0,-case_gap_outer - modules_pos[0], 0]) panel_lens();
     color([0,1,0]) translate([0,-case_gap_outer - modules_pos[0], 0]) panel_lens_nose();
 
     translate([0,-case_gap_outer - modules_pos[1], 0]) panel_display();
-    translate([0,-case_gap_outer - modules_pos[2], 0]) panel_controller();
+    //translate([0,-case_gap_outer - modules_pos[2], 0]) panel_controller();
     translate([0,-case_gap_outer - modules_pos[3], 0]) panel();
 }
