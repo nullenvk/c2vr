@@ -11,7 +11,7 @@ lens_outer = 2;
 lens_thick = 2;
 
 panel_w = 140;
-panel_h = 55;
+panel_h = 65;
 panel_d = 3;
 
 case_roundness = 8;
