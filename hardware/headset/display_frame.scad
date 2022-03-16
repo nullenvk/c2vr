@@ -1,10 +1,12 @@
 //EPSILON = 0.01; 
 //$fn = 50;
 
+include <params.scad>;
+
 // In MM
-screen_w = 54.24 + 0.4; 
-screen_h = 59.02 + 0.4;
-screen_d = 1.51 + 0.4;
+screen_w = 54.24 + 0.8; 
+screen_h = 59.02 + 0.8;
+screen_d = 1.51 + 0.8;
 
 frame_tapeout_h = 2; // TODO: Measure it correctly
 
