@@ -8,7 +8,7 @@ screen_w = 54.24 + 0.8;
 screen_h = 59.02 + 0.8;
 screen_d = 1.51 + 0.8;
 
-frame_tapeout_h = 2; // TODO: Measure it correctly
+frame_tapeout_h = 4; // TODO: Measure it correctly
 
 frame_side_thick = 2;
 frame_side_h = screen_d;
@@ -16,7 +16,7 @@ frame_base_thick = 1;
 
 frame_side_w = 4;
 
-holder_edge = 0.5;
+holder_edge = 1;
 holder_h = 1;
 
 // Calculated

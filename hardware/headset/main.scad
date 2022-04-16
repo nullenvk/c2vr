@@ -369,6 +369,15 @@ module face_panel() {
 }
 
 module case_top() {
+    module display_board_hole() {
+        dph_h = 9;
+
+        translate([-disp_con_w/2, 
+                -modules_pos[2] - panel_d - dph_h - case_gap_outer, 
+                panel_h/2 + case_roundness])
+        cube([disp_con_w, dph_h, case_thickness*2]);
+    }
+
     union() {
         face_panel();
 
@@ -396,8 +405,7 @@ module case_top() {
                 }
             }
 
-            translate([0,-modules_pos[2] - panel_d - 5, panel_h/2 + case_thickness*4])
-            cube([disp_con_w, 7.5, case_thickness*2], center=true);
+            display_board_hole();
         }
     }
 }

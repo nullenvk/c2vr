@@ -8,10 +8,10 @@ lens_outer = 2;
 lens_thick = 2;
 
 panel_w = 140;
-panel_h = 55;
+panel_h = 60;
 panel_d = 3;
 
-case_roundness = 8;
+case_roundness = 4;
 
 disp_con_w = 100;
 disp_con_h = 40;
