@@ -1,5 +1,6 @@
 $fn = 50;
 EPSILON = 0.01;
+TE_ERR = 0.8; // Potential length error caused by plastic thermal expansion
 
 IPD = 68.5;
 lens_d = 40 + 0.5;
@@ -7,8 +8,8 @@ lens_focal = 50;
 lens_outer = 2;
 lens_thick = 2;
 
-panel_w = 140;
-panel_h = 60;
+panel_w = 142;
+panel_h = 65;
 panel_d = 3;
 
 case_roundness = 4;

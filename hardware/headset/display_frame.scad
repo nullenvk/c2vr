@@ -4,9 +4,9 @@
 include <params.scad>;
 
 // In MM
-screen_w = 54.24 + 0.8; 
-screen_h = 59.02 + 0.8;
-screen_d = 1.51 + 0.8;
+screen_w = 54.24 + TE_ERR;
+screen_h = 59.02 + TE_ERR;
+screen_d = 1.51 + TE_ERR;
 
 frame_tapeout_h = 4; // TODO: Measure it correctly
 
@@ -77,7 +77,7 @@ module display_reference_visible() {
 module display_reference_main() {
     rotate([90,0,0])
     linear_extrude(frame_base_thick, convexity=20)
-    square([frame_base_w, frame_base_h], center=true);
+    square([frame_base_w + TE_ERR, frame_base_h + TE_ERR], center=true);
 }
 
 module tapeout_reference() {
@@ -129,4 +129,4 @@ module frame_full() {
     }
 }
 
-//translate([0,40,0]) frame_full();
+//translate([0,80,0]) frame_full();
