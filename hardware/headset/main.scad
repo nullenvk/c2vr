@@ -37,9 +37,11 @@ module lens_sockets() {
 }
 
 module panel_bare(w, h) {
+    cr = case_roundness;
+
     hull() {
-        square([w, h], center=true);
-        for(i = [[-w/2,-h/2], [w/2,-h/2], [-w/2,h/2], [w/2,h/2]])
+        square([w - cr, h - cr], center=true);
+        for(i = [[-w/2 + cr, -h/2 + cr], [w/2 - cr,-h/2 + cr], [-w/2 + cr, h/2 - cr], [w/2 - cr, h/2 - cr]])
         translate(i) circle(r=case_roundness);
     }
 }
@@ -81,7 +83,7 @@ module panel_lens_nose() {
             nose_shape();
         }
 
-        let(w = panel_w + 2 * case_roundness, h = panel_h + 2 * case_roundness) {
+        let(w = panel_w, h = panel_h) {
             translate([-w/2, -modules_space[1] - panel_d, -h/2])
             cube([w, modules_space[1], h]);
         }
@@ -104,15 +106,16 @@ module panel_lens() {
 }
 
 module panel_display() {
-    hole_h = 5;
+    hole_h = (panel_h - frame_base_h)/2;
+    hole_w = panel_w - case_roundness*2;
 
     module pd_base() {
         rotate([90,0,0])
         linear_extrude(panel_d)
         difference() {
             panel_base(panel_w, panel_h);
-            translate([0,hole_h/2 - (panel_h + 2*case_roundness)/2,0])
-                square([panel_w, hole_h], center=true);
+            translate([0, hole_h/2 - panel_h/2, 0])
+                square([hole_w, hole_h], center=true);
 
             ipd_mirror() frame_mount_pattern();
         }
@@ -149,15 +152,17 @@ module mpu_holes() {
 }
 
 module panel_controller() {
-    hole_h = 2.5;
+    //hole_h = (panel_h - frame_base_h)/2;
+    hole_h = controller_panel_hole_h;
+    hole_w = panel_w - case_roundness*2;
 
     rotate([90,0,0])
     linear_extrude(panel_d)
     difference() {
         panel_base(panel_w, panel_h);
 
-        translate([0,hole_h/2 - (panel_h + 2*case_roundness)/2,0])
-            square([panel_w, hole_h], center=true);
+        translate([0,hole_h/2 - panel_h/2, 0])
+            square([hole_w, hole_h], center=true);
 
         translate([0,disp_con_h/2 - 2.5,0]) display_controller_holes();
         translate([-mpu_w,-mpu_h - 5,0]) mpu_holes();
@@ -174,7 +179,7 @@ module case_base() {
 }
 
 module holder_hole() {
-    let(w = panel_w + 2 * (case_roundness + case_thickness), h = panel_h + 2 * (case_roundness + case_thickness)) {
+    let(w = panel_w + 2 * case_thickness, h = panel_h + 2 * case_thickness) {
         translate([w/2 - holder_w/2 - (M2_5_r + 0.1), - module_hole_dist])
         circle(r=M2_5_r + 0.1); 
     }
@@ -188,7 +193,7 @@ module module_holder(single=false) {
         difference() {
             panel_base(panel_w +  case_thickness, panel_h + case_thickness);
 
-            let(w = panel_w + 2 * (case_roundness + case_thickness), h = panel_h + 2 * (case_roundness + case_thickness)) {
+            let(w = panel_w + 2 * case_thickness, h = panel_h + 2 * case_thickness) {
                 translate([0,h/4])
                 square([w,h/2], center=true);
             
@@ -246,8 +251,8 @@ module case_side_mount() {
 }
 
 module case_bottom() {
-    w = panel_w + 2 * (case_roundness + case_thickness);
-    h = panel_h + 2 * (case_roundness + case_thickness);
+    w = panel_w + 2 * case_thickness;
+    h = panel_h + 2 * case_thickness;
 
     module case_bottom_bare() {
         rotate([90,0,0])
@@ -271,14 +276,11 @@ module case_bottom() {
         for(i = [0, len(modules_pos) - 2]) translate([0,-modules_pos[i],0]) module_holder();
         translate([0, -modules_pos[len(modules_pos) - 1], 0]) module_holder(single=true);
 
-
-        color([1,1,0.4]) {
-            translate([w/2,0,0])
-            case_side_mount();
-            
-            mirror([1,0,0]) translate([w/2,0,0])
-            case_side_mount();
-        }
+        translate([w/2,0,0])
+        case_side_mount();
+        
+        mirror([1,0,0]) translate([w/2,0,0])
+        case_side_mount();
     }
 }
 
@@ -302,7 +304,7 @@ module strap_mount() {
 }
 
 module strap_mount_r() {
-    translate([-panel_w/2 - 4 * case_thickness, 0, strap_mount_zside])
+    translate([-panel_w/2 - 2 * case_thickness, 0, strap_mount_zside])
     strap_mount();
 }
 
@@ -361,7 +363,7 @@ module face_panel() {
             strap_mount_r();
         }
             
-        translate([0, panel_h/2 + 3*case_thickness, face_len + strap_mount_ztop])
+        translate([0, panel_h/2 + 1*case_thickness, face_len + strap_mount_ztop])
         rotate([0,0,-90])
         strap_mount();
 
@@ -374,7 +376,7 @@ module case_top() {
 
         translate([-disp_con_w/2, 
                 -modules_pos[2] - panel_d - dph_h - case_gap_outer, 
-                panel_h/2 + case_roundness])
+                panel_h/2])
         cube([disp_con_w, dph_h, case_thickness*2]);
     }
 
@@ -383,7 +385,7 @@ module case_top() {
 
         // Actual top case
         difference() {
-            let(w = panel_w + 2 * (case_roundness + case_thickness), h = panel_h + 2 * (case_roundness + case_thickness)) {
+            let(w = panel_w + 2 * case_thickness, h = panel_h + 2 * case_thickness) {
                 union() {
                     rotate([90,0,0])
                     linear_extrude(case_length, convexity=20) 

@@ -1,6 +1,6 @@
 $fn = 50;
 EPSILON = 0.01;
-TE_ERR = 0.8; // Potential length error caused by plastic thermal expansion
+TE_ERR = 0.4; // Potential length error caused by plastic thermal expansion
 
 IPD = 68.5;
 lens_d = 40 + 0.5;
@@ -9,7 +9,7 @@ lens_outer = 2;
 lens_thick = 2;
 
 panel_w = 142;
-panel_h = 65;
+panel_h = 72;
 panel_d = 3;
 
 case_roundness = 4;
@@ -24,7 +24,7 @@ holder_w = 12;
 holder_d = 1;
 module_hole_dist = 10;
 
-strap_mount_ztop = 25;
+strap_mount_ztop = 35;
 strap_mount_zside = 10;
 
 nose_mount_offset = [10, 0];
@@ -36,3 +36,5 @@ M2_5_nut_l = 2;
 
 case_thickness = 2.5;
 case_gap_outer = 2;
+
+controller_panel_hole_h = 3;
