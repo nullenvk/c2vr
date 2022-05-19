@@ -13,6 +13,8 @@ modules_space = [0,
 modules_pos = [ for (a=0, b=modules_space[0]; a < len(modules_space); a= a+1, b=b+modules_space[ min(a, len(modules_space) - 1) ]) b];
     
 case_length = modules_pos[len(modules_pos) - 1] + (len(modules_pos) - 2) * panel_d;
+    
+displays_y_offset = (panel_h - frame_base_h - TE_ERR)/2;
 
 // Variables validation section
 assert(panel_w > lens_d*2);
@@ -62,7 +64,7 @@ module panel() {
 }
 
 module nose_shape() {
-    translate([0,0,-panel_h/2]) {
+    translate([0,0,-panel_h/2 + displays_y_offset]) {
         hull() {
             translate([0,0,-5])
             scale([0.85,1,2.1])
@@ -96,11 +98,12 @@ module panel_lens() {
         linear_extrude(panel_d) {
             difference() {
                 panel_base(panel_w, panel_h);
-                ipd_mirror() lens_holder_holes();
+
+                translate([0, displays_y_offset]) ipd_mirror() lens_holder_holes();
             }
         }
 
-        lens_sockets();
+        translate([0, 0, displays_y_offset]) lens_sockets();
         nose_shape();
     }
 }
@@ -109,7 +112,7 @@ module panel_display() {
     hole_h = panel_h - frame_base_h - TE_ERR;
     hole_w = panel_w - case_roundness*2;
 
-    y_offset = (panel_h - frame_base_h - TE_ERR)/2;
+    y_offset = displays_y_offset; 
 
     module pd_base() {
         rotate([90,0,0])
@@ -420,8 +423,8 @@ union() {
     case_bottom();
     translate([0,0,panel_h * 0]) color([0.2,0.5,1]) case_top();
     
-    //translate([0,-case_gap_outer - modules_pos[0], 0]) panel_lens();
-    //color([0,1,0]) translate([0,-case_gap_outer - modules_pos[0], 0]) panel_lens_nose();
+    translate([0,-case_gap_outer - modules_pos[0], 0]) panel_lens();
+    color([0,1,0]) translate([0,-case_gap_outer - modules_pos[0], 0]) panel_lens_nose();
 
     translate([0,-case_gap_outer - modules_pos[1], 0]) panel_display();
     translate([0,-case_gap_outer - modules_pos[2], 0]) panel_controller();
