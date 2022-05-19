@@ -106,8 +106,10 @@ module panel_lens() {
 }
 
 module panel_display() {
-    hole_h = (panel_h - frame_base_h)/2;
+    hole_h = panel_h - frame_base_h - TE_ERR;
     hole_w = panel_w - case_roundness*2;
+
+    y_offset = (panel_h - frame_base_h - TE_ERR)/2;
 
     module pd_base() {
         rotate([90,0,0])
@@ -117,13 +119,14 @@ module panel_display() {
             translate([0, hole_h/2 - panel_h/2, 0])
                 square([hole_w, hole_h], center=true);
 
+            translate([0, y_offset])
             ipd_mirror() frame_mount_pattern();
         }
     }
     
     difference() {
         pd_base();
-        ipd_mirror() display_reference_main();
+        translate([0, 0, y_offset]) ipd_mirror() display_reference_main();
     }
 }
 
@@ -417,8 +420,8 @@ union() {
     case_bottom();
     translate([0,0,panel_h * 0]) color([0.2,0.5,1]) case_top();
     
-    translate([0,-case_gap_outer - modules_pos[0], 0]) panel_lens();
-    color([0,1,0]) translate([0,-case_gap_outer - modules_pos[0], 0]) panel_lens_nose();
+    //translate([0,-case_gap_outer - modules_pos[0], 0]) panel_lens();
+    //color([0,1,0]) translate([0,-case_gap_outer - modules_pos[0], 0]) panel_lens_nose();
 
     translate([0,-case_gap_outer - modules_pos[1], 0]) panel_display();
     translate([0,-case_gap_outer - modules_pos[2], 0]) panel_controller();
