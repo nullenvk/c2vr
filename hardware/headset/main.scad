@@ -4,8 +4,8 @@ include <lens_holder.scad>;
 
 modules_space = [0, 
             lens_focal + screen_d,
-            0.5 + M2_5_nut_l + panel_d,
-            18,
+            7.5 + M2_5_nut_l + panel_d,
+            20,
 ];
 
 
