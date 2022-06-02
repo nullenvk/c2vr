@@ -2,12 +2,13 @@ include <params.scad>;
 include <display_frame.scad>;
 include <lens_holder.scad>;
 
+DEBUG_SCREEN_HOLE = true;
+
 modules_space = [0, 
             lens_focal + screen_d,
             0.5 + M2_5_nut_l + panel_d,
             18,
 ];
-
 
 // Cumulative sum of module sizes
 modules_pos = [ for (a=0, b=modules_space[0]; a < len(modules_space); a= a+1, b=b+modules_space[ min(a, len(modules_space) - 1) ]) b];
@@ -418,9 +419,26 @@ module case_top() {
     }
 }
 
+module debug_screen_hole() {
+    extra_gap = panel_d * 1.8;
+
+    hole_w = panel_w - holder_w * 2;
+    hole_h = case_thickness * 2;
+    hole_d = modules_space[2] - panel_d + extra_gap * 2;
+
+    hole_z = modules_pos[2] + case_gap_outer + extra_gap;
+
+    translate([-hole_w/2, -hole_z, -hole_h/2 - panel_h/2])
+    cube([hole_w, hole_d, hole_h]);
+}
+
 // Demo showcase:
 union() {
-    case_bottom();
+    difference() {
+        case_bottom();
+        if(DEBUG_SCREEN_HOLE) debug_screen_hole();
+    }
+
     translate([0,0,panel_h * 0]) color([0.2,0.5,1]) case_top();
     
     translate([0,-case_gap_outer - modules_pos[0], 0]) panel_lens();
