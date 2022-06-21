@@ -23,7 +23,7 @@ holder_h = 1;
 frame_base_w = 2*frame_side_thick + screen_w + 2*frame_side_w;
 frame_base_h = frame_side_thick + screen_h + frame_tapeout_h;
 
-frame_offset_x = 0;
+frame_offset_x = -EPSILON;
 frame_offset_y = 2;
 
 frame_nut_r = 1.25 + TE_ERR * 0.25;
@@ -131,4 +131,4 @@ module frame_full() {
     }
 }
 
-//translate([0,80,0]) frame_full();
+translate([0,80,0]) frame_full();
