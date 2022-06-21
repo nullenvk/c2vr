@@ -23,10 +23,10 @@ holder_h = 1;
 frame_base_w = 2*frame_side_thick + screen_w + 2*frame_side_w;
 frame_base_h = frame_side_thick + screen_h + frame_tapeout_h;
 
-frame_offset_x = 1;
+frame_offset_x = 0;
 frame_offset_y = 2;
 
-frame_nut_r = 1.25;
+frame_nut_r = 1.25 + TE_ERR * 0.25;
 frame_nut_pos = [
     frame_base_w/2 - frame_nut_r - frame_offset_x,
     frame_base_h/2 - frame_nut_r - frame_offset_y
