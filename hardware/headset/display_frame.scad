@@ -32,6 +32,8 @@ frame_nut_pos = [
     frame_base_h/2 - frame_nut_r - frame_offset_y
 ];
 
+reference_te_err = TE_ERR * 3;
+
 module dot_pattern(w, h) {
     dot_l = 2.4;
     dot_xn = w/(dot_l*2);
@@ -77,7 +79,7 @@ module display_reference_visible() {
 module display_reference_main() {
     rotate([90,0,0])
     linear_extrude(frame_base_thick, convexity=20)
-    square([frame_base_w + TE_ERR, frame_base_h + TE_ERR], center=true);
+    square([frame_base_w + reference_te_err, frame_base_h + reference_te_err], center=true);
 }
 
 module tapeout_reference() {
