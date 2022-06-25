@@ -31,7 +31,7 @@ nose_mount_offset = [10, 0];
     
 face_len = 40;
 
-M2_5_r = 1.25;
+M2_5_r = 1.25 + 0.1;
 M2_5_nut_l = 2;
 
 case_thickness = 2.5;
