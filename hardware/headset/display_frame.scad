@@ -130,5 +130,3 @@ module frame_full() {
         translate([frame_side_w,0,frame_base_thick + frame_side_h]) frame_holder();
     }
 }
-
-translate([0,80,0]) frame_full();
