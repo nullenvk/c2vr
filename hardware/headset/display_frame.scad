@@ -76,11 +76,12 @@ module display_reference_visible() {
     square([screen_w - 2*holder_edge, screen_h - 2*holder_edge]);
 }
 
-module display_reference_main() {
+module display_reference_both(ipd) {
     rotate([90,0,0])
     linear_extrude(frame_base_thick, convexity=20)
-    square([frame_base_w + reference_te_err, frame_base_h + reference_te_err], center=true);
+    square([frame_base_w + reference_te_err + ipd, frame_base_h + reference_te_err], center=true);
 }
+
 
 module tapeout_reference() {
     square([screen_w, frame_tapeout_h + EPSILON]);
