@@ -8,8 +8,8 @@ lens_focal = 50;
 lens_outer = 2;
 lens_thick = 2;
 
-panel_w = 142;
-panel_h = 72;
+panel_w = 150;
+panel_h = 75;
 panel_d = 3;
 
 case_roundness = 4;
@@ -20,7 +20,7 @@ disp_con_h = 40;
 mpu_w = 25;
 mpu_h = 15;
 
-holder_w = 12;
+holder_w = 9;
 holder_d = 1;
 module_hole_dist = 10;
 
