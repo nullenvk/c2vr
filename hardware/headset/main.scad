@@ -130,7 +130,7 @@ module panel_display() {
     
     difference() {
         pd_base();
-        translate([0, 0, y_offset]) ipd_mirror() display_reference_main();
+        translate([0, 0, y_offset]) display_reference_both(IPD);
     }
 }
 
