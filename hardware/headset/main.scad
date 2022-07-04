@@ -12,21 +12,27 @@ modules_space = [0,
 
 // Cumulative sum of module sizes
 modules_pos = [ for (a=0, b=modules_space[0]; a < len(modules_space); a= a+1, b=b+modules_space[ min(a, len(modules_space) - 1) ]) b];
-    
 case_length = modules_pos[len(modules_pos) - 1] + (len(modules_pos) - 2) * panel_d;
-    
+
 displays_y_offset = (panel_h - frame_base_h - TE_ERR)/2;
+case_inner_w = panel_w + 2 * TE_ERR;
+case_inner_h = panel_h + 2 * TE_ERR; 
+case_outer_w = case_inner_w + 2 * case_thickness;
+case_outer_h = case_inner_h + 2 * case_thickness;
+
 
 // Variables validation section
 assert(panel_w > lens_d*2);
 
 module lens_approx() {
     rotate([90,0,0]) {
-        translate([0,0,-EPSILON])
-        cylinder(lens_thick + EPSILON, d=lens_d + lens_outer);
-        
-        translate([0,0,lens_thick - EPSILON])
-        cylinder(panel_d - lens_thick + EPSILON*2, d=lens_d);
+        union() {
+            translate([0,0,-EPSILON])
+            cylinder(lens_thick + EPSILON, d=lens_d + lens_outer + TE_ERR/2);
+            
+            translate([0,0,lens_thick - EPSILON])
+            cylinder(panel_d - lens_thick + EPSILON*2, d=lens_d);
+        }
     }
 }
 
@@ -180,8 +186,8 @@ function add(v, i = 0, r = 0) = i < len(v) ? add(v, i + 1, r + v[i]) : r;
 
 module case_base() {
     difference() {
-        panel_bare(panel_w + 2 * case_thickness, panel_h + 2 * case_thickness);
-        panel_bare(panel_w + EPSILON + 0.3, panel_h + EPSILON + 0.3);
+        panel_bare(case_outer_w, case_outer_h);
+        panel_bare(case_inner_w, case_inner_h + 0.3);
     }
 }
 
@@ -216,7 +222,7 @@ module module_holder(single=false) {
     union() {
         translate([0,holder_d,0]) holder_single();
         if(!single)
-            translate([0,-panel_d - 0.3, 0]) holder_single();
+            translate([0,-holder_space, 0]) holder_single();
     }
 }
 
@@ -258,17 +264,14 @@ module case_side_mount() {
 }
 
 module case_bottom() {
-    w = panel_w + 2 * case_thickness;
-    h = panel_h + 2 * case_thickness;
-
     module case_bottom_bare() {
         rotate([90,0,0])
         linear_extrude(case_length, convexity=10)
         difference() {
             case_base();
 
-            translate([0,h/4])
-            square([w,h/2], center=true);
+            translate([0, case_outer_h / 4])
+            square([case_outer_w, case_outer_h / 2], center=true);
         }
     }
 
@@ -283,10 +286,10 @@ module case_bottom() {
         for(i = [0 : len(modules_pos) - 2]) translate([0,-modules_pos[i],0]) module_holder();
         translate([0, -modules_pos[len(modules_pos) - 1], 0]) module_holder(single=true);
 
-        translate([w/2,0,0])
+        translate([case_outer_w / 2,0,0])
         case_side_mount();
         
-        mirror([1,0,0]) translate([w/2,0,0])
+        mirror([1,0,0]) translate([case_outer_w / 2,0,0])
         case_side_mount();
     }
 }
@@ -392,25 +395,23 @@ module case_top() {
 
         // Actual top case
         difference() {
-            let(w = panel_w + 2 * case_thickness, h = panel_h + 2 * case_thickness) {
-                union() {
-                    rotate([90,0,0])
-                    linear_extrude(case_length, convexity=20) 
-                    difference() {
-                        case_base();
+            union() {
+                rotate([90,0,0])
+                linear_extrude(case_length, convexity=20) 
+                difference() {
+                    case_base();
 
-                        translate([0,-h/4])
-                        square([w,h/2], center=true);
-                    }
+                    translate([0,-case_outer_h / 4])
+                    square([case_outer_w, case_outer_h / 2], center=true);
+                }
 
 
-                    mirror([0,0,1]) {
-                        translate([w/2,0,0])
-                        case_side_mount();
-                        
-                        mirror([1,0,0]) translate([w/2,0,0])
-                        case_side_mount();
-                    }
+                mirror([0,0,1]) {
+                    translate([case_outer_w / 2, 0, 0])
+                    case_side_mount();
+
+                    mirror([1,0,0]) translate([case_outer_w / 2, 0, 0])
+                    case_side_mount();
                 }
             }
 

@@ -1,6 +1,6 @@
 $fn = 50;
 EPSILON = 0.01;
-TE_ERR = 0.4; // Potential length error caused by plastic thermal expansion
+TE_ERR = 0.45; // Potential length error caused by plastic thermal expansion
 
 IPD = 68.5;
 lens_d = 40 + 0.5;
@@ -22,6 +22,7 @@ mpu_h = 15;
 
 holder_w = 9;
 holder_d = 1;
+holder_space = panel_d + TE_ERR;
 module_hole_dist = 10;
 
 strap_mount_ztop = 35;
