@@ -1,6 +1,9 @@
 # C2VR - A home-made, 3D-printed VR headset
 ## Warning: This project is in very early stages of development
 
+## Preview
+![An OpenSCAD render of the headset](doc/main-screenshot.png)
+
 ## Features (so far):
 - 3DoF tracking
 - Dual-screen support
