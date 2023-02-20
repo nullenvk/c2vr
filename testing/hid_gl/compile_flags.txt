@@ -1,0 +1,9 @@
+-Iinclude
+-Wall
+-fstack-protector-strong
+-O2
+-pipe
+-Werror=format-security
+-I/usr/local/include
+-I./include
+-std=c++17

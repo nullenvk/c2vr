@@ -8,7 +8,7 @@ const int REFRESH_RATE_MS = 1000 / 120; // 120 HZ
 const int INIT_DELAY_MS = 200;
 const int CALIBRATION_DELAY_MS = 500;
 
-//#define CALIBRATION
+#define CALIBRATION 1
 
 // Descriptor made by okawo80085
 static const uint8_t USB_HID_Descriptor[] PROGMEM = {
@@ -88,12 +88,16 @@ void setup() {
         "Calibrating gyroscope and accelerometer, MPU should stay in place");
     mpu.calibrateAccelGyro();
     delay(CALIBRATION_DELAY_MS);
+#endif
 
+#ifdef CALIBRATION_MAG
     Serial.println(
         "Calibrating magnetometer, MPU should be rotated in 8-figure");
     mpu.calibrateMag();
     delay(CALIBRATION_DELAY_MS);
+#endif
 
+#ifdef CALIBRATION
     mpu_write_eeprom();
 #endif
 
@@ -121,6 +125,6 @@ void loop() {
 
         HID().SendReport(1, quat, 16);
 
-        delay(REFRESH_RATE_MS);
+        //delay(REFRESH_RATE_MS);
     }
 }
