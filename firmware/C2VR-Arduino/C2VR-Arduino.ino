@@ -1,14 +1,11 @@
 #include <HID.h>
-#include <MPU9250.h>
+#include <mpu9250.h>
 #include <EEPROM.h>
 
-#define EEPROM_MPU_ADDR 0x0
 #define QUAT_SCALE 10000.f
-const int REFRESH_RATE_MS = 1000 / 120; // 120 HZ
 const int INIT_DELAY_MS = 200;
-const int CALIBRATION_DELAY_MS = 500;
 
-#define CALIBRATION 1
+bfs::Mpu9250 mpu(&Wire, bfs::Mpu9250::I2C_ADDR_PRIM);
 
 // Descriptor made by okawo80085
 static const uint8_t USB_HID_Descriptor[] PROGMEM = {
@@ -26,41 +23,8 @@ static const uint8_t USB_HID_Descriptor[] PROGMEM = {
     0x81, 0x02, //   INPUT (Data,Var,Abs) - to the host
     0xc0};
 
-struct EEPROMData {
-    float AccBias[3], GyroBias[3], MagBias[3], MagScale[3];
-};
-
-MPU9250 mpu;
-MPU9250Setting mpu_settings;
-EEPROMData eeprom_dat;
-
-inline void mpu_read_eeprom() {
-    EEPROM.get(EEPROM_MPU_ADDR, eeprom_dat);
-
-    mpu.setAccBias(eeprom_dat.AccBias[0], eeprom_dat.AccBias[1], eeprom_dat.AccBias[2]);
-    mpu.setGyroBias(eeprom_dat.GyroBias[0], eeprom_dat.GyroBias[1], eeprom_dat.GyroBias[2]);
-    mpu.setMagBias(eeprom_dat.MagBias[0], eeprom_dat.MagBias[1], eeprom_dat.MagBias[2]);
-    mpu.setMagScale(eeprom_dat.MagScale[0], eeprom_dat.MagScale[1], eeprom_dat.MagScale[2]);
-}
-
-inline void mpu_write_eeprom() {
-    eeprom_dat.AccBias[0] = mpu.getAccBiasX();
-    eeprom_dat.AccBias[1] = mpu.getAccBiasY();
-    eeprom_dat.AccBias[2] = mpu.getAccBiasZ();
-    
-    eeprom_dat.GyroBias[0] = mpu.getGyroBiasX();
-    eeprom_dat.GyroBias[1] = mpu.getGyroBiasY();
-    eeprom_dat.GyroBias[2] = mpu.getGyroBiasZ();
-   
-    eeprom_dat.MagBias[0] = mpu.getMagBiasX();
-    eeprom_dat.MagBias[1] = mpu.getMagBiasY();
-    eeprom_dat.MagBias[2] = mpu.getMagBiasZ();
-    
-    eeprom_dat.MagScale[0] = mpu.getMagScaleX();
-    eeprom_dat.MagScale[1] = mpu.getMagScaleY();
-    eeprom_dat.MagScale[2] = mpu.getMagScaleZ();
-
-    EEPROM.put(EEPROM_MPU_ADDR, eeprom_dat);
+void catch_fire() {
+    while(1) delay(5000);
 }
 
 void setup() {
@@ -71,60 +35,43 @@ void setup() {
     Serial.begin(115200);
     Wire.begin();
     Wire.setClock(400000);
+    
+    if(!mpu.Begin()) {
+        Serial.println("IMU INIT ERROR");
+        catch_fire();
+    }
+    
+    if(!mpu.ConfigGyroRange(bfs::Mpu9250::GYRO_RANGE_500DPS)) {
+        Serial.println("IMU GYRO RANGE ERROR");
+        catch_fire();
+    }
 
     delay(INIT_DELAY_MS);
-
-    mpu_settings.fifo_sample_rate = FIFO_SAMPLE_RATE::SMPL_200HZ;
-    mpu_settings.gyro_fs_sel = GYRO_FS_SEL::G2000DPS;
-    mpu_settings.gyro_fchoice = 0x03;
-    mpu_settings.gyro_dlpf_cfg = GYRO_DLPF_CFG::DLPF_41HZ;
-
-    mpu.setup(0x68, mpu_settings);
-    //mpu.setFilterIterations(10);
-    mpu_read_eeprom();
-
-#ifdef CALIBRATION
-    Serial.println(
-        "Calibrating gyroscope and accelerometer, MPU should stay in place");
-    mpu.calibrateAccelGyro();
-    delay(CALIBRATION_DELAY_MS);
-#endif
-
-#ifdef CALIBRATION_MAG
-    Serial.println(
-        "Calibrating magnetometer, MPU should be rotated in 8-figure");
-    mpu.calibrateMag();
-    delay(CALIBRATION_DELAY_MS);
-#endif
-
-#ifdef CALIBRATION
-    mpu_write_eeprom();
-#endif
 
     Serial.println("OK");
 }
 
 void loop() {
-    if (mpu.update()) {
-        int32_t quat[4] = {
-            mpu.getQuaternionX() * QUAT_SCALE,
-            mpu.getQuaternionY() * QUAT_SCALE,
-            mpu.getQuaternionZ() * QUAT_SCALE,
-            mpu.getQuaternionW() * QUAT_SCALE,
-        };
+    if(!mpu.Read())
+        return;
 
-        /*
-        Serial.print(quat[0]);
-        Serial.print(",");
-        Serial.print(quat[1]);
-        Serial.print(",");
-        Serial.print(quat[2]);
-        Serial.print(",");
-        Serial.println(quat[3]);
-        */
+    if(!mpu.new_imu_data())
+        return;
 
-        HID().SendReport(1, quat, 16);
+    int32_t quat[4] = {
+        mpu.gyro_x_radps() * QUAT_SCALE,
+        mpu.gyro_y_radps() * QUAT_SCALE,
+        mpu.gyro_z_radps() * QUAT_SCALE,
+        0,
+    };
+        
+    /*
+    Serial.print(mpu.gyro_x_radps());
+    Serial.print(" ");
+    Serial.print(mpu.gyro_y_radps());
+    Serial.print(" ");
+    Serial.println(mpu.gyro_z_radps());
+    */
 
-        //delay(REFRESH_RATE_MS);
-    }
+    HID().SendReport(1, quat, 16);
 }
