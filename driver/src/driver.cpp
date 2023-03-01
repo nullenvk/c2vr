@@ -197,7 +197,7 @@ public:
         pose.qWorldFromDriverRotation = HmdQuaternion_Init( 1, 0, 0, 0 );
         pose.qDriverFromHeadRotation = HmdQuaternion_Init( 1, 0, 0, 0 );
 
-        pose.qDriverFromHeadRotation = hidHandler.getHMDQuat();
+        pose.qRotation = hidHandler.getHMDQuat();
         
         return pose;
     }

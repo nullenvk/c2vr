@@ -5,6 +5,8 @@
 #include <openvr/openvr_driver.h>
 #include <hidapi/hidapi.h>
 
+#include "MadgwickAHRS.h"
+
 const int HID_TIMEOUT = 8000;
 const double IMU_SCALE = 10000;
 
@@ -15,6 +17,7 @@ private:
     std::unique_ptr<std::thread> thrd = nullptr;
     std::mutex mutex;
     vr::HmdQuaternion_t quat;
+    Madgwick madg;
 
     bool b_shouldQuit = false;
     hid_device *dev;

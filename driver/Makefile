@@ -7,7 +7,7 @@ CXXFLAGS := -Wall -Wextra -fstack-protector-strong -O2 -pipe \
     -Werror=format-security -I/usr/local/include -DDRIVER_SAMPLE_EXPORTS -std=c++17
 LDFLAGS := -lhidapi-libusb
 
-OBJ := src/driver.o src/driverlog.o src/hid.o
+OBJ := src/driver.o src/driverlog.o src/hid.o src/MadgwickAHRS.o
 BIN := $(DRV_DIR)/bin/linux64/driver_c2vr.so
 
 all: $(BIN)
