@@ -34,6 +34,10 @@ static const char * const k_pch_c2vr_RenderWidth_Int32 = "renderWidth";
 static const char * const k_pch_c2vr_RenderHeight_Int32 = "renderHeight";
 static const char * const k_pch_c2vr_SecondsFromVsyncToPhotons_Float = "secondsFromVsyncToPhotons";
 static const char * const k_pch_c2vr_DisplayFrequency_Float = "displayFrequency";
+static const char * const k_pch_c2vr_VID_Int32 = "edid_vid";
+static const char * const k_pch_c2vr_PID_Int32 = "edid_pid";
+static const char * const k_pch_c2vr_ReverseW_Bool= "vidReverseW";
+static const char * const k_pch_c2vr_ReverseH_Bool= "vidReverseH";
 
 class CWatchdogDriver_Sample : public vr::IVRWatchdogProvider
 {
@@ -96,6 +100,8 @@ void CWatchdogDriver_Sample::Cleanup()
 
 class CHMDDriver : public vr::ITrackedDeviceServerDriver, public vr::IVRDisplayComponent {
 public:
+    bool m_reverseW, m_reverseH;
+
     CHMDDriver() {
         m_unObjectId = vr::k_unTrackedDeviceIndexInvalid;
         m_propertyContainer = vr::k_ulInvalidPropertyContainer;
@@ -118,6 +124,9 @@ public:
         m_renderH = vr::VRSettings()->GetInt32( k_pch_c2vr_Section, k_pch_c2vr_RenderHeight_Int32 );
         m_secondsFromVsyncToPhotons = vr::VRSettings()->GetFloat( k_pch_c2vr_Section, k_pch_c2vr_SecondsFromVsyncToPhotons_Float );
         m_displayFreq = vr::VRSettings()->GetFloat( k_pch_c2vr_Section, k_pch_c2vr_DisplayFrequency_Float );
+        m_reverseW = vr::VRSettings()->GetBool( k_pch_c2vr_Section, k_pch_c2vr_ReverseW_Bool );
+        m_reverseH = vr::VRSettings()->GetBool( k_pch_c2vr_Section, k_pch_c2vr_ReverseH_Bool );
+
     }
 
     vr::EVRInitError Activate(uint32_t unObjectId) {
@@ -138,9 +147,13 @@ public:
         // avoid "not fullscreen" warnings from vrmonitor
         vr::VRProperties()->SetBoolProperty(m_propertyContainer, vr::Prop_IsOnDesktop_Bool, false);
 
-        hidHandler.start(
-                vr::VRProperties()->GetInt32Property(m_propertyContainer, vr::Prop_EdidVendorID_Int32),
-                vr::VRProperties()->GetInt32Property(m_propertyContainer, vr::Prop_EdidProductID_Int32));
+        
+        bool hidres = hidHandler.start(
+                vr::VRSettings()->GetInt32( k_pch_c2vr_Section, k_pch_c2vr_VID_Int32),
+                vr::VRSettings()->GetInt32( k_pch_c2vr_Section, k_pch_c2vr_PID_Int32));
+
+        if(hidres)
+            return vr::VRInitError_Init_HmdNotFound;
 
         return vr::VRInitError_None;
     }
@@ -154,8 +167,10 @@ public:
     void PowerOff() {}
     
     void *GetComponent(const char *componentNameVer) {
-        if(!strcasecmp(componentNameVer, vr::IVRDisplayComponent_Version))
+        if(!strcasecmp(componentNameVer, vr::IVRDisplayComponent_Version)) {
+            DebugDriverLog("Couldn't find the USB HID device");
             return (vr::IVRDisplayComponent*)this;
+        }
 
         return NULL;
     }
@@ -182,7 +197,7 @@ public:
         pose.qWorldFromDriverRotation = HmdQuaternion_Init( 1, 0, 0, 0 );
         pose.qDriverFromHeadRotation = HmdQuaternion_Init( 1, 0, 0, 0 );
 
-        // TODO: Update quaternion data from hidHandler
+        pose.qDriverFromHeadRotation = hidHandler.getHMDQuat();
         
         return pose;
     }
@@ -222,11 +237,10 @@ public:
     }
     
     void GetProjectionRaw(vr::EVREye eye, float *pfLeft, float *pfRight, float *pfTop, float *pfBottom) {
-        // Reversed projection - TODO: Add reverse video to device settings
-        *pfLeft = 1.0;
-        *pfRight = -1.0;
-        *pfTop = 1.0;
-        *pfBottom = -1.0;	
+        *pfLeft = m_reverseW ? -1.0 : 1.0;
+        *pfRight = m_reverseW ? 1.0 : -1.0;
+        *pfTop = m_reverseH ? -1.0 : 1.0;
+        *pfBottom = m_reverseH ? 1.0 : -1.0;
     }
 
     vr::DistortionCoordinates_t ComputeDistortion(vr::EVREye eye, float fU, float fV) {

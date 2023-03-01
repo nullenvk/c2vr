@@ -20,10 +20,14 @@ void CHIDHandler::thread_loop() {
         // Critical section
         mutex.lock();
 
-        quat.x = (double)tq[0] / IMU_SCALE;
-        quat.y = (double)tq[1] / IMU_SCALE;
-        quat.z = (double)tq[2] / IMU_SCALE;
-        quat.w = (double)tq[3] / IMU_SCALE;
+        //quat.x = (double)tq[0] / IMU_SCALE;
+        //quat.y = (double)tq[1] / IMU_SCALE;
+        //quat.z = (double)tq[2] / IMU_SCALE;
+        //quat.w = (double)tq[3] / IMU_SCALE;
+        quat.w = 0.707f;
+        quat.x = 0.0f;
+        quat.y = 0.707f;
+        quat.z = 0.0f;
 
         // End of critical section
         mutex.unlock();
