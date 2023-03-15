@@ -108,6 +108,7 @@ int main()
         glfwPollEvents();
     }
 
+    imuthread.stop();
     glfwTerminate();
     return 0;
 }

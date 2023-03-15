@@ -59,6 +59,8 @@ bool IMUThread::start() {
     if(thread.get() != nullptr)
         return true;
 
+    should_stop = false;
+
     hid_init();
     dev_hndl = hid_open(0x1b4f, 0x9206, NULL);
 
@@ -81,12 +83,22 @@ bool IMUThread::start() {
     return false;
 }
 
+void IMUThread::stop() {
+    if(thread.get() == nullptr)
+        return;
+
+    should_stop = true;
+
+    thread->join();
+    thread.reset(nullptr);
+}
+
 void IMUThread::mainLoop() {
-    while(true) {
+    while(!should_stop) {
         imu->update();
 
         mutex.lock();
-        outQuat = imu->getQuat();
+        out_quat = imu->getQuat();
         mutex.unlock();
     }
 }
@@ -95,7 +107,7 @@ glm::quat IMUThread::getQuat() {
     glm::quat ret;
 
     mutex.lock();
-    ret = outQuat;
+    ret = out_quat;
     mutex.unlock();
 
     return ret;

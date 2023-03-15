@@ -34,12 +34,14 @@ class IMUThread {
     hid_device *dev_hndl; // TODO: Handle at exit
 
     std::mutex mutex;
+    bool should_stop;
 
-    glm::quat outQuat;
+    glm::quat out_quat;
 
     void mainLoop();
 public:
     bool start();
+    void stop();
 
     glm::quat getQuat();
 };
