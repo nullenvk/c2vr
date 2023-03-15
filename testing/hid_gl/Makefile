@@ -5,7 +5,7 @@ LDFLAGS := -L/usr/local/lib
 LIBS := -lglfw -lGL -lX11 -lpthread -ldl -lassimp -lhidapi-libusb
 
 BIN := gltest 
-OBJ := src/main.o src/shader.o src/model.o src/glad.o src/ahrs.o
+OBJ := src/main.o src/shader.o src/model.o src/glad.o src/ahrs.o src/imu.o
 
 all: $(BIN)
 
