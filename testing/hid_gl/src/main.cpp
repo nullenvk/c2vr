@@ -9,6 +9,7 @@
 
 #include "shader.hpp"
 #include "model.hpp"
+#include "ahrs.hpp"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
@@ -50,22 +51,49 @@ GLFWwindow *init_win()
     return window;
 }
 
+class IMU {
+    IMUDat lastdat;
+    AHRS *ahrs;
 
-glm::quat imu_read_gyro(hid_device *dev_hndl, uint8_t *buf) {
-    const float QUAT_SCALE = 10000.f;
+    hid_device *dev_hndl;
 
-    hid_read(dev_hndl, (unsigned char*)buf, 17);
+    void readData();
 
-    int32_t quat[4];
-    memcpy(quat, buf+1, 16);
+public:
+    IMU(hid_device *dev_hndl, unsigned int sampleFreq, AHRS *ahrs) 
+        : ahrs(ahrs), dev_hndl(dev_hndl) {
+        ahrs->init(sampleFreq);
+    };
 
-    glm::quat ret;
-    ret.x = (float)quat[0] / QUAT_SCALE;
-    ret.y = (float)quat[1] / QUAT_SCALE;
-    ret.z = (float)quat[2] / QUAT_SCALE;
-    ret.w = (float)quat[3] / QUAT_SCALE;
+    void update();
+    glm::quat getQuat();
+};
 
-    return ret;
+void IMU::readData() {
+    float buf[9];
+
+    hid_read(dev_hndl, (unsigned char*)buf, sizeof(buf));
+
+    lastdat.gyro.x = buf[0];
+    lastdat.gyro.y = buf[1];
+    lastdat.gyro.z = buf[2];
+
+    lastdat.acc.x = buf[3];
+    lastdat.acc.y = buf[4];
+    lastdat.acc.z = buf[5];
+    
+    lastdat.mag.x = buf[6];
+    lastdat.mag.y = buf[7];
+    lastdat.mag.z = buf[8];
+}
+
+void IMU::update() {
+    readData();
+    ahrs->update(lastdat);
+}
+
+glm::quat IMU::getQuat() {
+    return ahrs->getQuat();
 }
 
 int main() 
@@ -83,6 +111,9 @@ int main()
     hidbuf[0] = 0x0;
     hidbuf[1] = 0x81;
     hid_write(dev_hndl, (unsigned char*)hidbuf, 17);
+
+    StupidAHRS imuAHRS;
+    IMU imu(dev_hndl, 60, &imuAHRS);
 
     GLFWwindow *window = init_win();
     if(!window)
@@ -123,10 +154,12 @@ int main()
 
         matLocal = glm::mat4(1.0f);
         //matLocal = glm::scale(matLocal, glm::vec3(0.5, 0.5, 0.5));
+        
+        imu.update();
 
         matModel = glm::mat4(1.0f);
         matModel = glm::translate(matModel, glm::vec3(0.f, 0.f, -3.f));
-        matModel = matModel * glm::mat4_cast(imu_read_gyro(dev_hndl, hidbuf));
+        matModel = matModel * glm::mat4_cast(imu.getQuat()); 
 
         defaultShader.setMatrix4("transform", matProjection * matView * matModel * matLocal);
         model.draw(defaultShader);
