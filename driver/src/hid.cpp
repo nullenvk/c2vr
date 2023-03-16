@@ -31,10 +31,10 @@ void CHIDHandler::thread_loop() {
                 tq[6], tq[7], tq[8]);
 
         vr::HmdQuaternion_t curq;
-        curq.x = madg.q0;
-        curq.y = madg.q1;
-        curq.z = madg.q2;
-        curq.w = madg.q3;
+        curq.w = madg.q0;
+        curq.x = madg.q1;
+        curq.y = madg.q2;
+        curq.z = madg.q3;
 
         // Just for debugging
         //float rot = fmod((float)clock() / (float)CLOCKS_PER_SEC, 3.14159f);

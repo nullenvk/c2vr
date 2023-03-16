@@ -1,4 +1,6 @@
 #include <openvr/openvr_driver.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include <cstring>
 #include <memory>
 #include <string>
@@ -194,10 +196,23 @@ public:
             pose.deviceIsConnected = false;
         }
 
-        pose.qWorldFromDriverRotation = HmdQuaternion_Init( 1, 0, 0, 0 );
-        pose.qDriverFromHeadRotation = HmdQuaternion_Init( 1, 0, 0, 0 );
+        pose.qWorldFromDriverRotation = HmdQuaternion_Init( 1, 0, 0, 0 ); 
+        pose.qDriverFromHeadRotation = HmdQuaternion_Init( 1, 0, 0, 0 ); 
+        //pose.qDriverFromHeadRotation = HmdQuaternion_Init( -0.5, 0.5, 0.5, 0.5 ); 
 
-        pose.qRotation = hidHandler.getHMDQuat();
+
+        vr::HmdQuaternion_t inquat = hidHandler.getHMDQuat();
+        //pose.qRotation = hidHandler.getHMDQuat();
+        
+        // Using GLM because I'm too lazy to implement a quaternion inverse function
+        // Also, OpenVR's coordinate system is weird, so components Z and Y have to get swapped
+        glm::quat gquat = glm::quat(inquat.w, inquat.x, inquat.z, inquat.y);
+        gquat = glm::inverse(gquat);
+
+        pose.qRotation.w = gquat.w;
+        pose.qRotation.x = gquat.x;
+        pose.qRotation.y = gquat.y;
+        pose.qRotation.z = gquat.z;
         
         return pose;
     }

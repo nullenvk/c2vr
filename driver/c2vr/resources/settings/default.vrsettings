@@ -14,7 +14,7 @@
       "ipd": 0.0685,
       "edid_vid": 6991, // 1b4f
       "edid_pid": 37382, // 9206
-      "vidReverseW": true,
-      "vidReverseH": true
+      "vidReverseW": false,
+      "vidReverseH": false 
    }
 }

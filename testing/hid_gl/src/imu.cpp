@@ -73,7 +73,7 @@ bool IMUThread::start() {
     hidbuf[1] = 0x81;
     hid_write(dev_hndl, (unsigned char*)hidbuf, 17);
 
-    ahrs.reset(new StupidAHRS());
+    ahrs.reset(new MadgwickAHRS());
     imu.reset(new IMU(dev_hndl, 1000, ahrs.get()));
 
     imu->readBiasFile("bias.csv");

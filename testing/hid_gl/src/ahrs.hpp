@@ -20,8 +20,22 @@ class StupidAHRS : public AHRS {
     glm::quat estimate;
 
 public:
-    void init(unsigned int samplFreq);
+    void init(unsigned int sampleFreq);
     void update(IMUDat rawIn);
+    glm::quat getQuat();
+};
+
+class MadgwickAHRS : public AHRS {
+    unsigned int sampleFreq;
+    float beta;
+
+    glm::quat estimate;
+
+public:
+    void init(unsigned int sampleFreq);
+    void update(IMUDat rawIn);
+
+    void setBetaVal(float beta);
     glm::quat getQuat();
 };
 

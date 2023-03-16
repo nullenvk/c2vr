@@ -76,10 +76,17 @@ int main()
 
     glm::mat4 matProjection, matView, matModel, matLocal;
     glm::vec3 CameraPos = glm::vec3(0,0,-3.f);
+    //glm::quat baseQuat = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
+    glm::quat baseQuat = glm::quat(-0.5f, 0.5f, 0.5f, 0.5f);
 
     while(!glfwWindowShouldClose(window)) {
         if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
             glfwSetWindowShouldClose(window, true);
+        
+        if(glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
+            baseQuat = imuthread.getQuat();
+            baseQuat.w *= -1;
+        }
 
         int winw, winh;
         glfwGetWindowSize(window, &winw, &winh);
@@ -97,9 +104,14 @@ int main()
         matLocal = glm::mat4(1.0f);
         //matLocal = glm::scale(matLocal, glm::vec3(0.5, 0.5, 0.5));
         
+        glm::quat hmdQuat = imuthread.getQuat();
         matModel = glm::mat4(1.0f);
         matModel = glm::translate(matModel, glm::vec3(0.f, 0.f, -3.f));
-        matModel = matModel * glm::mat4_cast(imuthread.getQuat()); 
+        matModel = matModel * glm::mat4_cast(baseQuat); 
+        matModel = matModel * glm::mat4_cast(hmdQuat); 
+        
+        glm::quat testq = imuthread.getQuat();
+        std::cout << testq.w << " " << testq.x << " " << testq.y << " " << testq.z << std::endl;
 
         defaultShader.setMatrix4("transform", matProjection * matView * matModel * matLocal);
         model.draw(defaultShader);
