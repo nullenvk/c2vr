@@ -1,6 +1,7 @@
 $fn = 50;
 EPSILON = 0.01;
-TE_ERR = 0.45; // Potential length error caused by plastic thermal expansion
+//TE_ERR = 0.45; // Potential length error caused by plastic thermal expansion
+TE_ERR = 0.25; // Potential length error caused by plastic thermal expansion
 
 IPD = 68.5;
 lens_d = 40 + 0.5;

@@ -429,7 +429,7 @@ module debug_screen_hole() {
 
     hole_z = modules_pos[2] + case_gap_outer + extra_gap;
 
-    translate([-hole_w/2, -hole_z, -hole_h/2 - panel_h/2])
+    translate([-hole_w/2, -hole_z, -hole_h - panel_h/2])
     cube([hole_w, hole_d, hole_h]);
 }
 
@@ -440,7 +440,7 @@ union() {
         if(DEBUG_SCREEN_HOLE) debug_screen_hole();
     }
 
-    translate([0,0,panel_h * 0]) color([0.2,0.5,1]) case_top();
+    //translate([0,0,panel_h * 0]) color([0.2,0.5,1]) case_top();
     
     translate([0,-case_gap_outer - modules_pos[0], 0]) panel_lens();
     color([0,1,0]) translate([0,-case_gap_outer - modules_pos[0], 0]) panel_lens_nose();
