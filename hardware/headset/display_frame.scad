@@ -8,10 +8,14 @@ screen_w = 54.24 + TE_ERR;
 screen_h = 59.02 + TE_ERR;
 screen_d = 1.51 + TE_ERR;
 
+dframe_screenhole_w = screen_w + TE_ERR;
+dframe_screenhole_h = screen_h + TE_ERR;
+dframe_screenhole_d = screen_d + TE_ERR;
+
 dframe_tapeout_h = 4; // TODO: Measure it correctly
 
 dframe_side_thick = 2;
-dframe_side_h = screen_d;
+dframe_side_h = dframe_screenhole_d;
 dframe_base_thick = 1;
 
 dframe_side_w = 4;
@@ -70,10 +74,10 @@ module dframe_mount_pattern() {
 }
 
 module display_reference_flat() {
-    square([screen_w, screen_h]);
+    square([dframe_screenhole_w, dframe_screenhole_h]);
 }
 module display_reference_visible() {
-    square([screen_w - 2*holder_edge, screen_h - 2*holder_edge]);
+    square([dframe_screenhole_w - 2*holder_edge, dframe_screenhole_h - 1*holder_edge]);
 }
 
 module display_reference_both(ipd) {
@@ -84,7 +88,7 @@ module display_reference_both(ipd) {
 
 
 module tapeout_reference() {
-    square([screen_w, dframe_tapeout_h + EPSILON]);
+    square([dframe_screenhole_w, dframe_tapeout_h + EPSILON]);
 }
 
 module dframe_bare() {
@@ -131,5 +135,3 @@ module dframe_full() {
         translate([dframe_side_w,0,dframe_base_thick + dframe_side_h]) dframe_holder();
     }
 }
-
-//translate([0,80,0]) dframe_full();
