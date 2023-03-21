@@ -18,9 +18,11 @@ dframe_side_w = 4;
 holder_edge = 1;
 holder_h = 1;
 
-// Calculated
 dframe_base_w = 2*dframe_side_thick + dframe_screenhole_w + 2*dframe_side_w;
 dframe_base_h = dframe_side_thick + dframe_screenhole_h + dframe_tapeout_h;
+// Use these values if you use the old headset design
+//dframe_base_w = 2*dframe_side_thick + screen_w + TE_ERR + 2*dframe_side_w;
+//dframe_base_h = dframe_side_thick + screen_w + TE_ERR + dframe_tapeout_h;
 
 dframe_offset_x = -EPSILON;
 dframe_offset_y = 2;
