@@ -8,33 +8,33 @@ screen_w = 54.24 + TE_ERR;
 screen_h = 59.02 + TE_ERR;
 screen_d = 1.51 + TE_ERR;
 
-frame_tapeout_h = 4; // TODO: Measure it correctly
+dframe_tapeout_h = 4; // TODO: Measure it correctly
 
-frame_side_thick = 2;
-frame_side_h = screen_d;
-frame_base_thick = 1;
+dframe_side_thick = 2;
+dframe_side_h = screen_d;
+dframe_base_thick = 1;
 
-frame_side_w = 4;
+dframe_side_w = 4;
 
 holder_edge = 1;
 holder_h = 1;
 
 // Calculated
-frame_base_w = 2*frame_side_thick + screen_w + 2*frame_side_w;
-frame_base_h = frame_side_thick + screen_h + frame_tapeout_h;
+dframe_base_w = 2*dframe_side_thick + screen_w + 2*dframe_side_w;
+dframe_base_h = dframe_side_thick + screen_h + dframe_tapeout_h;
 
-frame_offset_x = -EPSILON;
-frame_offset_y = 2;
+dframe_offset_x = -EPSILON;
+dframe_offset_y = 2;
 
-frame_nut_r = 1.25 + TE_ERR * 0.25;
-frame_nut_pos = [
-    frame_base_w/2 - frame_nut_r - frame_offset_x,
-    frame_base_h/2 - frame_nut_r - frame_offset_y
+dframe_nut_r = 1.25 + TE_ERR * 0.25;
+dframe_nut_pos = [
+    dframe_base_w/2 - dframe_nut_r - dframe_offset_x,
+    dframe_base_h/2 - dframe_nut_r - dframe_offset_y
 ];
 
 reference_te_err = TE_ERR * 3;
 
-module dot_pattern(w, h) {
+module dframe_dot_pattern(w, h) {
     dot_l = 2.4;
     dot_xn = w/(dot_l*2);
     dot_yn = h/(dot_l*2);
@@ -48,13 +48,13 @@ module dot_pattern(w, h) {
     }
 }
 
-module reference_nut_holes() {
+module dframe_reference_nut_holes() {
     module hole(mx, my) {
-        translate([mx * frame_nut_pos[0], my * frame_nut_pos[1]])
-            circle(r=frame_nut_r);
+        translate([mx * dframe_nut_pos[0], my * dframe_nut_pos[1]])
+            circle(r=dframe_nut_r);
     }
     
-    translate([frame_base_w/2, frame_base_h/2]) {
+    translate([dframe_base_w/2, dframe_base_h/2]) {
         hole(1,1);
         hole(-1,1);
         hole(1,-1);
@@ -62,10 +62,10 @@ module reference_nut_holes() {
     }
 }
 
-module frame_mount_pattern() {
-    translate([-frame_base_w/2, -frame_base_h/2]) {
-        reference_nut_holes();
-        translate([frame_side_thick + frame_side_w, frame_tapeout_h]) dot_pattern(screen_w, screen_h);
+module dframe_mount_pattern() {
+    translate([-dframe_base_w/2, -dframe_base_h/2]) {
+        dframe_reference_nut_holes();
+        translate([dframe_side_thick + dframe_side_w, dframe_tapeout_h]) dframe_dot_pattern(screen_w, screen_h);
     }
 }
 
@@ -78,58 +78,58 @@ module display_reference_visible() {
 
 module display_reference_both(ipd) {
     rotate([90,0,0])
-    linear_extrude(frame_base_thick, convexity=20)
-    square([frame_base_w + reference_te_err + ipd, frame_base_h + reference_te_err], center=true);
+    linear_extrude(dframe_base_thick, convexity=20)
+    square([dframe_base_w + reference_te_err + ipd, dframe_base_h + reference_te_err], center=true);
 }
 
 
 module tapeout_reference() {
-    square([screen_w, frame_tapeout_h + EPSILON]);
+    square([screen_w, dframe_tapeout_h + EPSILON]);
 }
 
-module frame_bare() {
-    linear_extrude(frame_side_h)
+module dframe_bare() {
+    linear_extrude(dframe_side_h)
     difference() {
-        square([frame_base_w - 2*frame_side_w, frame_base_h]); // Change later
+        square([dframe_base_w - 2*dframe_side_w, dframe_base_h]); // Change later
 
-        translate([frame_side_thick, frame_tapeout_h])
+        translate([dframe_side_thick, dframe_tapeout_h])
             display_reference_flat();
 
-        translate([frame_side_thick, -EPSILON/2])
+        translate([dframe_side_thick, -EPSILON/2])
             tapeout_reference();
     }
 }
 
-module frame_holder() {
+module dframe_holder() {
     linear_extrude(holder_h)
     difference() {
-        square([frame_base_w - 2*frame_side_w, frame_base_h]); // Change later
+        square([dframe_base_w - 2*dframe_side_w, dframe_base_h]); // Change later
 
-        translate([frame_side_thick + holder_edge, frame_tapeout_h])
+        translate([dframe_side_thick + holder_edge, dframe_tapeout_h])
             display_reference_visible();
 
-        translate([frame_side_thick, -EPSILON/2])
+        translate([dframe_side_thick, -EPSILON/2])
             tapeout_reference();
     }
 }
 
-module frame_base() {
-    linear_extrude(frame_base_thick)
+module dframe_base() {
+    linear_extrude(dframe_base_thick)
     difference() {
-        square([frame_base_w, frame_base_h]);
+        square([dframe_base_w, dframe_base_h]);
 
-        reference_nut_holes();
-        translate([frame_side_thick + frame_side_w, frame_tapeout_h]) dot_pattern(screen_w, screen_h);
+        dframe_reference_nut_holes();
+        translate([dframe_side_thick + dframe_side_w, dframe_tapeout_h]) dframe_dot_pattern(screen_w, screen_h);
     }
 }
 
-module frame_full() {
-    translate([-frame_base_w/2, -frame_base_h/2])
+module dframe_full() {
+    translate([-dframe_base_w/2, -dframe_base_h/2])
     union() {
-        frame_base();
-        translate([frame_side_w,0,frame_base_thick]) frame_bare();
-        translate([frame_side_w,0,frame_base_thick + frame_side_h]) frame_holder();
+        dframe_base();
+        translate([dframe_side_w,0,dframe_base_thick]) dframe_bare();
+        translate([dframe_side_w,0,dframe_base_thick + dframe_side_h]) dframe_holder();
     }
 }
 
-//translate([0,80,0]) frame_full();
+//translate([0,80,0]) dframe_full();
