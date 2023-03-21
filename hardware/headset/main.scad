@@ -5,7 +5,7 @@ include <lens_holder.scad>;
 DEBUG_SCREEN_HOLE = true;
 
 modules_space = [0, 
-            lens_focal + screen_d,
+            lens_focal + screen_d - lens_thick/2,
             7.5 + M2_5_nut_l + panel_d,
             20,
 ];
@@ -14,7 +14,7 @@ modules_space = [0,
 modules_pos = [ for (a=0, b=modules_space[0]; a < len(modules_space); a= a+1, b=b+modules_space[ min(a, len(modules_space) - 1) ]) b];
 case_length = modules_pos[len(modules_pos) - 1] + (len(modules_pos) - 2) * panel_d;
 
-displays_y_offset = (panel_h - frame_base_h - TE_ERR)/2;
+displays_y_offset = (panel_h - dframe_base_h - TE_ERR)/2;
 case_inner_w = panel_w + 2 * TE_ERR;
 case_inner_h = panel_h + 2 * TE_ERR; 
 case_outer_w = case_inner_w + 2 * case_thickness;
@@ -116,7 +116,7 @@ module panel_lens() {
 }
 
 module panel_display() {
-    hole_h = panel_h - frame_base_h - TE_ERR;
+    hole_h = panel_h - dframe_base_h - TE_ERR;
     hole_w = panel_w - case_roundness*2;
 
     y_offset = displays_y_offset; 
@@ -130,7 +130,7 @@ module panel_display() {
                 square([hole_w, hole_h], center=true);
 
             translate([0, y_offset])
-            ipd_mirror() frame_mount_pattern();
+            ipd_mirror() dframe_mount_pattern();
         }
     }
     
@@ -165,7 +165,7 @@ module mpu_holes() {
 }
 
 module panel_controller() {
-    //hole_h = (panel_h - frame_base_h)/2;
+    //hole_h = (panel_h - dframe_base_h)/2;
     hole_h = controller_panel_hole_h;
     hole_w = panel_w - case_roundness*2;
 
