@@ -1,6 +1,6 @@
 include <params.scad>;
 
-lens_holder_outer = 6;
+lens_holder_outer = 6.5;
 lens_holder_inner = 2;
 lens_holder_holes_n = 3;
 lens_holder_angle = 30;

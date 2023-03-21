@@ -7,11 +7,18 @@
 
 #define REFRESH_RATE 1000
 
+/*
 const float IMUBIAS[9] = {
     -0.027233f, -0.008759f, 0.106667f,    
     //-0.025538f, -0.009340f, 0.090206f, // Gyro
     13.1271643136f, 4.2865617693999996f, 3.1704234511f, // Accel
     67.3205818979f, 37.3787205402f, -67.5572598736f, // Magnet
+};
+*/
+const float IMUBIAS[9] = {
+    -0.026140f, -0.009953f, 0.094662f, 
+    15.106390f, 5.191623f, 0.943417f, 
+    11.485655f, 15.375260f, -46.134659
 };
 
 void CHIDHandler::thread_loop() {
@@ -71,8 +78,10 @@ bool CHIDHandler::start(unsigned short vid, unsigned short pid) {
     thrd.reset(new std::thread(&CHIDHandler::thread_loop, this));
 
     madg.begin(REFRESH_RATE);
-    madg.beta = 0.04f;
+    //madg.beta = 0.04f;
+    madg.beta = 0.1f;
 
+    /*
     uint8_t buf[37] = {0};
 
     hid_read(dev, buf, 36);
@@ -88,6 +97,7 @@ bool CHIDHandler::start(unsigned short vid, unsigned short pid) {
                     tq[3], tq[4], tq[5],
                     tq[6], tq[7], tq[8]);
     }
+    */
 
     return false;
 }
