@@ -21,6 +21,10 @@ disp_con_h = 40;
 mpu_w = 25;
 mpu_h = 15;
 
+screen_w = 54.24;
+screen_h = 59.02;
+screen_d = 1.51;
+
 holder_w = 9;
 holder_d = 1;
 holder_space = panel_d + TE_ERR;

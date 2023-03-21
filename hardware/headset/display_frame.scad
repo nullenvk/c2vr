@@ -3,14 +3,9 @@
 
 include <params.scad>;
 
-// In MM
-screen_w = 54.24 + TE_ERR;
-screen_h = 59.02 + TE_ERR;
-screen_d = 1.51 + TE_ERR;
-
-dframe_screenhole_w = screen_w + TE_ERR;
-dframe_screenhole_h = screen_h + TE_ERR;
-dframe_screenhole_d = screen_d + TE_ERR;
+dframe_screenhole_w = screen_w + 2 * TE_ERR;
+dframe_screenhole_h = screen_h + 2 * TE_ERR;
+dframe_screenhole_d = screen_d + 2 * TE_ERR;
 
 dframe_tapeout_h = 4; // TODO: Measure it correctly
 
@@ -24,8 +19,8 @@ holder_edge = 1;
 holder_h = 1;
 
 // Calculated
-dframe_base_w = 2*dframe_side_thick + screen_w + 2*dframe_side_w;
-dframe_base_h = dframe_side_thick + screen_h + dframe_tapeout_h;
+dframe_base_w = 2*dframe_side_thick + dframe_screenhole_w + 2*dframe_side_w;
+dframe_base_h = dframe_side_thick + dframe_screenhole_h + dframe_tapeout_h;
 
 dframe_offset_x = -EPSILON;
 dframe_offset_y = 2;
