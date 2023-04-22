@@ -9,7 +9,7 @@ lens_focal = 50;
 lens_outer = 2;
 lens_thick = 2;
 
-panel_w = 150;
+panel_w = 152;
 panel_h = 75;
 panel_d = 3;
 

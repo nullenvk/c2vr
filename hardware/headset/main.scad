@@ -6,7 +6,7 @@ DEBUG_SCREEN_HOLE = true;
 
 modules_space = [0, 
             lens_focal + screen_d - lens_thick/2,
-            7.5 + M2_5_nut_l + panel_d,
+            12 + M2_5_nut_l + panel_d,
             20,
 ];
 
